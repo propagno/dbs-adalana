@@ -1,0 +1,147 @@
+services:
+  db-dev:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: db-dev
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD_DEV:-YourStrong@Passw0rd}
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    volumes:
+      - db-dev-data:/var/opt/mssql
+    networks:
+      - db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD_DEV:-YourStrong@Passw0rd} -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  liquibase-dev:
+    image: liquibase/liquibase:latest
+    container_name: liquibase-dev
+    depends_on:
+      - db-dev
+    volumes:
+      - ./liquibase/changelog:/liquibase/changelog
+      - ./scripts:/liquibase/scripts
+      - ./drivers:/liquibase/lib
+    networks:
+      - db-network
+    command: 
+      - --changelog-file=db.changelog-master.xml
+      - --url=jdbc:sqlserver://db-dev:1433;databaseName=${DB_NAME_DEV:-propagno_db};encrypt=true;trustServerCertificate=true
+      - --username=sa
+      - --password=${DB_PASSWORD_DEV:-YourStrong@Passw0rd}
+      - --driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
+      - --classpath=/liquibase/lib
+      - update
+
+  db-staging:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: db-staging
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD_STAGING:-YourStrong@Passw0rd}
+      - MSSQL_PID=Standard
+    ports:
+      - "1434:1433"
+    volumes:
+      - db-staging-data:/var/opt/mssql
+    networks:
+      - db-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD_STAGING:-YourStrong@Passw0rd} -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  liquibase-staging:
+    image: liquibase/liquibase:latest
+    container_name: liquibase-staging
+    depends_on:
+      db-staging:
+        condition: service_healthy
+    volumes:
+      - ./liquibase:/liquibase/changelog
+      - ./scripts:/liquibase/scripts
+      - ./drivers:/liquibase/lib
+    networks:
+      - db-network
+    command: 
+      - --changelog-file=/liquibase/changelog/db.changelog-master.xml
+      - --url=jdbc:sqlserver://db-staging:1433;databaseName=${DB_NAME_STAGING:-propagno_db_staging};encrypt=true;trustServerCertificate=true
+      - --username=sa
+      - --password=${DB_PASSWORD_STAGING:-YourStrong@Passw0rd}
+      - --driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
+      - --classpath=/liquibase/lib
+      - update
+
+  db-prod:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: db-prod
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASSWORD_PROD:-YourStrong@Passw0rd}
+      - MSSQL_PID=Enterprise
+    ports:
+      - "1435:1433"
+    volumes:
+      - db-prod-data:/var/opt/mssql
+    networks:
+      - db-network
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD_PROD:-YourStrong@Passw0rd} -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  liquibase-prod:
+    image: liquibase/liquibase:latest
+    container_name: liquibase-prod
+    depends_on:
+      db-prod:
+        condition: service_healthy
+    volumes:
+      - ./liquibase:/liquibase/changelog
+      - ./scripts:/liquibase/scripts
+      - ./drivers:/liquibase/lib
+    networks:
+      - db-network
+    command: 
+      - --changelog-file=/liquibase/changelog/db.changelog-master.xml
+      - --url=jdbc:sqlserver://db-prod:1433;databaseName=${DB_NAME_PROD:-propagno_db_prod};encrypt=true;trustServerCertificate=true
+      - --username=sa
+      - --password=${DB_PASSWORD_PROD:-YourStrong@Passw0rd}
+      - --driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
+      - --classpath=/liquibase/lib
+      - update
+
+volumes:
+  db-dev-data:
+    driver: local
+  db-staging-data:
+    driver: local
+  db-prod-data:
+    driver: local
+
+networks:
+  db-network:
+    driver: bridge
+    name: db-propagno-network
+

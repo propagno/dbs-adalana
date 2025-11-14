@@ -1,0 +1,93 @@
+name: Database Rollback
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Ambiente para rollback'
+        required: true
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
+      rollback_type:
+        description: 'Tipo de rollback'
+        required: true
+        type: choice
+        options:
+          - count
+          - tag
+      rollback_value:
+        description: 'Valor (número de changesets ou tag)'
+        required: true
+        type: string
+
+env:
+  DB_SERVICE: db-${{ github.event.inputs.environment }}
+  LIQUIBASE_SERVICE: liquibase-${{ github.event.inputs.environment }}
+
+jobs:
+  rollback:
+    name: Rollback Database
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Verify database is running
+        run: |
+          docker-compose ps ${{ env.DB_SERVICE }} || exit 1
+
+      - name: Show history before rollback
+        run: |
+          echo "📋 Histórico antes do rollback:"
+          docker run --rm \
+            --network db-propagno-network \
+            -v "$(pwd)/liquibase:/liquibase/changelog" \
+            liquibase/liquibase:latest \
+            --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
+            --url="jdbc:sqlserver://${{ env.DB_SERVICE }}:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true" \
+            --username=sa \
+            --password="${{ secrets.DB_PASSWORD_DEV }}" \
+            history || true
+
+      - name: Execute rollback
+        run: |
+          if [ "${{ github.event.inputs.rollback_type }}" = "count" ]; then
+            docker run --rm \
+              --network db-propagno-network \
+              -v "$(pwd)/liquibase:/liquibase/changelog" \
+              liquibase/liquibase:latest \
+              --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
+              --url="jdbc:sqlserver://${{ env.DB_SERVICE }}:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true" \
+              --username=sa \
+              --password="${{ secrets.DB_PASSWORD_DEV }}" \
+              rollback-count "${{ github.event.inputs.rollback_value }}"
+          else
+            docker run --rm \
+              --network db-propagno-network \
+              -v "$(pwd)/liquibase:/liquibase/changelog" \
+              liquibase/liquibase:latest \
+              --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
+              --url="jdbc:sqlserver://${{ env.DB_SERVICE }}:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true" \
+              --username=sa \
+              --password="${{ secrets.DB_PASSWORD_DEV }}" \
+              rollback "${{ github.event.inputs.rollback_value }}"
+          fi
+
+      - name: Show history after rollback
+        run: |
+          echo "📋 Histórico após rollback:"
+          docker run --rm \
+            --network db-propagno-network \
+            -v "$(pwd)/liquibase:/liquibase/changelog" \
+            liquibase/liquibase:latest \
+            --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
+            --url="jdbc:sqlserver://${{ env.DB_SERVICE }}:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true" \
+            --username=sa \
+            --password="${{ secrets.DB_PASSWORD_DEV }}" \
+            history || true
+

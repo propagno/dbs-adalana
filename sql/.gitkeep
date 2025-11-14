@@ -1,0 +1,3 @@
+# Diretório para scripts SQL do modelo físico
+# Coloque aqui os scripts SQL que serão convertidos em migrations do Liquibase
+

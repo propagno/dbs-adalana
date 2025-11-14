@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="1" author="propagno">
+        <comment>Create initial database schema</comment>
+        
+        <!-- Criar database se não existir -->
+        <sql>
+            IF NOT EXISTS (SELECT * FROM sys.databases WHERE name = 'propagno_db')
+            BEGIN
+                CREATE DATABASE propagno_db;
+            END
+        </sql>
+        
+        <!-- Usar o database -->
+        <sql>
+            USE propagno_db;
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="propagno">
+        <comment>Create example_table</comment>
+        
+        <sql>
+            IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[example_table]') AND type in (N'U'))
+            BEGIN
+                CREATE TABLE example_table (
+                    id BIGINT IDENTITY(1,1) NOT NULL,
+                    name NVARCHAR(255) NOT NULL,
+                    description NVARCHAR(MAX),
+                    created_at DATETIME2 CONSTRAINT DF_example_table_created_at DEFAULT GETDATE() NOT NULL,
+                    updated_at DATETIME2 CONSTRAINT DF_example_table_updated_at DEFAULT GETDATE() NOT NULL,
+                    CONSTRAINT PK_EXAMPLE_TABLE PRIMARY KEY (id)
+                );
+            END
+        </sql>
+        
+        <sql>
+            IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_example_table_name' AND object_id = OBJECT_ID(N'[dbo].[example_table]'))
+            BEGIN
+                CREATE INDEX idx_example_table_name ON example_table(name);
+            END
+        </sql>
+        
+        <sql>
+            IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_example_table_created_at' AND object_id = OBJECT_ID(N'[dbo].[example_table]'))
+            BEGIN
+                CREATE INDEX idx_example_table_created_at ON example_table(created_at);
+            END
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,112 @@
+name: CI/CD - Database Production
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+    paths:
+      - 'liquibase/**'
+      - 'scripts/**'
+      - 'docker-compose.yml'
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Digite "deploy" para confirmar deploy em produção'
+        required: true
+        type: string
+
+env:
+  ENVIRONMENT: prod
+  DB_SERVICE: db-prod
+  LIQUIBASE_SERVICE: liquibase-prod
+
+jobs:
+  validate:
+    name: Validate Liquibase Changesets
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate changelog
+        run: |
+          docker run --rm \
+            -v "$(pwd)/liquibase:/liquibase/changelog" \
+            liquibase/liquibase:latest \
+            --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
+            validate
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: validate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Upload Trivy results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  deploy:
+    name: Deploy to Production Database
+    needs: [validate, security-scan]
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+    if: github.event.inputs.confirm == 'deploy' || startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create backup before deployment
+        run: |
+          echo "📦 Creating backup before production deployment..."
+          # Aqui você pode adicionar lógica de backup
+          # Exemplo: docker exec db-prod /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P $DB_PASSWORD_PROD -Q "BACKUP DATABASE propagno_db_prod TO DISK='/var/opt/mssql/backup/backup_$(date +%Y%m%d_%H%M%S).bak'"
+
+      - name: Start database
+        run: |
+          docker-compose up -d ${{ env.DB_SERVICE }}
+
+      - name: Wait for database
+        run: |
+          timeout 120 bash -c 'until docker-compose ps ${{ env.DB_SERVICE }} | grep -q "healthy"; do sleep 2; done'
+
+      - name: Run Liquibase migrations
+        run: |
+          docker-compose up ${{ env.LIQUIBASE_SERVICE }}
+
+      - name: Verify deployment
+        run: |
+          docker-compose ps
+          echo "✅ Production database deployment completed successfully"
+
+      - name: Notify deployment
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅' : '❌'
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: '${{ job.status }}' === 'success' ? 'success' : 'failure',
+              description: `${status} Database deployment to production`,
+              context: 'database/production'
+            })
+

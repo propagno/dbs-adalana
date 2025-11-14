@@ -1,0 +1,71 @@
+name: CI/CD - Database Development
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'liquibase/**'
+      - 'scripts/**'
+      - 'docker-compose.yml'
+  workflow_dispatch:
+
+env:
+  ENVIRONMENT: dev
+  DB_SERVICE: db-dev
+  LIQUIBASE_SERVICE: liquibase-dev
+
+jobs:
+  validate:
+    name: Validate Liquibase Changesets
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate changelog
+        run: |
+          docker run --rm \
+            -v "$(pwd)/liquibase:/liquibase/changelog" \
+            liquibase/liquibase:latest \
+            --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
+            validate
+
+      - name: Check SQL files
+        run: |
+          if [ -d "sql" ] && [ "$(ls -A sql/*.sql 2>/dev/null)" ]; then
+            echo "✅ Scripts SQL encontrados em sql/"
+            ls -la sql/*.sql
+          else
+            echo "ℹ️  Nenhum script SQL novo encontrado"
+          fi
+
+  deploy:
+    name: Deploy to Development Database
+    needs: validate
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Start database
+        run: |
+          docker-compose up -d ${{ env.DB_SERVICE }}
+
+      - name: Wait for database
+        run: |
+          timeout 120 bash -c 'until docker-compose ps ${{ env.DB_SERVICE }} | grep -q "healthy"; do sleep 2; done'
+
+      - name: Run Liquibase migrations
+        run: |
+          docker-compose up ${{ env.LIQUIBASE_SERVICE }}
+
+      - name: Verify deployment
+        run: |
+          docker-compose ps
+          echo "✅ Database deployment completed successfully"
+

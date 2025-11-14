@@ -1,0 +1,120 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+      - develop
+
+jobs:
+  validate-pr:
+    name: Validate PR Requirements
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate PR Title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            refactor
+            chore
+          scopes: |
+            migration
+            liquibase
+            docker
+            script
+            ci
+          requireScope: false
+
+      - name: Validate SQL files
+        run: |
+          echo "🔍 Validando scripts SQL..."
+          if [ -d "sql" ] && [ "$(ls -A sql/*.sql 2>/dev/null)" ]; then
+            for file in sql/*.sql; do
+              echo "Validando $file..."
+              # Verifica se usa IF NOT EXISTS
+              if ! grep -q "IF NOT EXISTS" "$file"; then
+                echo "❌ Arquivo $file não usa IF NOT EXISTS!"
+                echo "Por favor, adicione IF NOT EXISTS para proteger dados existentes"
+                exit 1
+              fi
+              # Verifica se há DROP ou TRUNCATE
+              if grep -iE "(DROP TABLE|TRUNCATE TABLE)" "$file"; then
+                echo "⚠️  Arquivo $file contém DROP ou TRUNCATE!"
+                echo "Isso pode destruir dados. Por favor, revise cuidadosamente"
+                exit 1
+              fi
+            done
+            echo "✅ Scripts SQL validados"
+          else
+            echo "ℹ️  Nenhum script SQL novo encontrado"
+          fi
+
+      - name: Validate Liquibase changelog
+        run: |
+          echo "🔍 Validando changelog do Liquibase..."
+          if [ -f "liquibase/changelog/db.changelog-master.xml" ]; then
+            # Valida sintaxe XML básica
+            if ! xmllint --noout liquibase/changelog/db.changelog-master.xml 2>/dev/null; then
+              echo "❌ Changelog master tem erros de sintaxe XML!"
+              exit 1
+            fi
+            echo "✅ Changelog master válido"
+          fi
+
+      - name: Check for .env files
+        run: |
+          echo "🔍 Verificando arquivos .env..."
+          if find . -name ".env*" -not -name ".env.example" | grep -q .; then
+            echo "❌ Arquivos .env encontrados no repositório!"
+            echo "Por favor, remova arquivos .env e use apenas .env.example"
+            exit 1
+          else
+            echo "✅ Nenhum arquivo .env encontrado"
+          fi
+
+      - name: Check for secrets
+        run: |
+          echo "🔍 Verificando se há secrets no código..."
+          if grep -rE "(password|secret|token)\s*=\s*['\"][^'\"]+['\"]" --include="*.sh" --include="*.yml" --include="*.yaml" scripts/ docker-compose.yml 2>/dev/null | grep -v "YourStrong@Passw0rd" | grep -v "example"; then
+            echo "⚠️  Possíveis secrets encontrados no código!"
+            exit 1
+          else
+            echo "✅ Nenhum secret encontrado"
+          fi
+
+      - name: Comment PR with validation results
+        uses: actions/github-script@v7
+        if: always()
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅' : '❌'
+            const body = `## Validação de PR ${status}
+            
+            - Validação de título: ${status}
+            - Validação de SQL: ${status}
+            - Validação de Liquibase: ${status}
+            - Verificação de .env: ${status}
+            - Verificação de secrets: ${status}
+            
+            ${status === '✅' ? 'Tudo OK! PR pronto para review.' : 'Por favor, corrija os problemas identificados.'}`
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
+

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="1" author="propagno">
+        <comment>Add_example_table</comment>
+        
+        <!-- SQL gerado a partir do modelo físico -->
+        <sql>
+            -- Exemplo de script SQL para criar uma nova tabela
+-- Este script será convertido em uma migration do Liquibase
+-- IMPORTANTE: Use IF NOT EXISTS para evitar erros se a tabela já existir
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[new_table]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE new_table (
+        id BIGINT IDENTITY(1,1) PRIMARY KEY,
+        name NVARCHAR(255) NOT NULL,
+        email NVARCHAR(255) NOT NULL,
+        created_at DATETIME2 DEFAULT GETDATE() NOT NULL,
+        updated_at DATETIME2 DEFAULT GETDATE() NOT NULL
+    );
+    
+    CREATE INDEX idx_new_table_email ON new_table(email);
+    CREATE INDEX idx_new_table_created_at ON new_table(created_at);
+    
+    PRINT 'Tabela new_table criada com sucesso!';
+END
+ELSE
+BEGIN
+    PRINT 'Tabela new_table já existe.';
+END
+
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
