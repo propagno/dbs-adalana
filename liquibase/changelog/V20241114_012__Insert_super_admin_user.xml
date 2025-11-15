@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-012" author="adalana">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM [user] WHERE role = 'super_admin'
+            </sqlCheck>
+        </preConditions>
+        
+        <comment>Insert initial SUPER_ADMIN user (email: admin@adalana.com, password: admin123)</comment>
+
+        <sql>
+            -- Insert SUPER_ADMIN user
+            -- Email: admin@adalana.com
+            -- Password: admin123
+            -- Hash BCrypt (generated with BCryptPasswordEncoder strength 10): $2a$10$K2zIfNvDznNGp2Q9xmK74OmWbULpF.3zpL/M3uNPzA/ESRzMUtiGC
+            INSERT INTO [user] (id, account_id, email, password_hash, name, role, phone, active, created_at, updated_at)
+            VALUES (
+                NEWID(),
+                NULL,
+                'admin@adalana.com',
+                '$2a$10$K2zIfNvDznNGp2Q9xmK74OmWbULpF.3zpL/M3uNPzA/ESRzMUtiGC',
+                'Super Administrador',
+                'super_admin',
+                NULL,
+                1,
+                GETUTCDATE(),
+                GETUTCDATE()
+            );
+        </sql>
+
+        <rollback>
+            DELETE FROM [user] WHERE email = 'admin@adalana.com' AND role = 'super_admin';
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-010" author="adalana" context="demo">
+        <comment>Insert default message templates for demo account</comment>
+        
+        <!-- First create a demo account if needed -->
+        <sql>
+            IF NOT EXISTS (SELECT 1 FROM account WHERE company_name = 'Demo Company')
+            BEGIN
+                INSERT INTO account (id, company_name, currency, timezone, default_reminder_time, settings)
+                VALUES (
+                    'A0000000-0000-0000-0000-000000000001',
+                    'Demo Company',
+                    'BRL',
+                    'America/Sao_Paulo',
+                    '08:00:00',
+                    '{}'
+                );
+            END
+        </sql>
+
+        <!-- Insert default templates -->
+        <sql>
+            INSERT INTO template (account_id, name, type, body)
+            VALUES 
+            (
+                'A0000000-0000-0000-0000-000000000001',
+                'Lembrete de Entrega',
+                'order_reminder',
+                'Olá {{customer_name}}, sua entrega de {{product_name}} está agendada para {{delivery_date}}. Responda SIM para confirmar ou acesse {{confirmation_link}} para alterar.'
+            ),
+            (
+                'A0000000-0000-0000-0000-000000000001',
+                'Confirmação de Entrega',
+                'order_confirmation',
+                'Obrigado {{customer_name}}! Sua entrega de {{product_name}} foi confirmada para {{delivery_date}}.'
+            ),
+            (
+                'A0000000-0000-0000-0000-000000000001',
+                'Boas-vindas',
+                'subscription_welcome',
+                'Bem-vindo(a) {{customer_name}}! Sua assinatura de {{product_name}} foi ativada com sucesso. Primeira entrega em {{first_delivery_date}}.'
+            ),
+            (
+                'A0000000-0000-0000-0000-000000000001',
+                'Lembrete de Pagamento',
+                'payment_reminder',
+                'Olá {{customer_name}}, você tem um pagamento pendente de R$ {{amount}} referente à entrega de {{delivery_date}}. Por favor, efetue o pagamento.'
+            );
+        </sql>
+
+        <rollback>
+            <delete tableName="template">
+                <where>account_id = 'A0000000-0000-0000-0000-000000000001'</where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-004" author="adalana">
+        <comment>Create product table for subscription items</comment>
+        
+        <createTable tableName="product">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sku" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price_cents" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="interval" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="custom_interval_days" type="INT"/>
+            <column name="active" type="BIT" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="product" 
+            baseColumnNames="account_id" 
+            constraintName="fk_product_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="product" indexName="idx_product_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="product" indexName="idx_product_sku_account" unique="true">
+            <column name="sku"/>
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="product" indexName="idx_product_active">
+            <column name="active"/>
+        </createIndex>
+
+        <sql>
+            ALTER TABLE product ADD CONSTRAINT ck_product_interval 
+            CHECK (interval IN ('daily', 'weekly', 'biweekly', 'monthly', 'quarterly', 'custom'));
+
+            ALTER TABLE product ADD CONSTRAINT ck_product_custom_interval 
+            CHECK ((interval = 'custom' AND custom_interval_days IS NOT NULL) OR 
+                   (interval != 'custom' AND custom_interval_days IS NULL));
+        </sql>
+
+        <rollback>
+            <dropTable tableName="product"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

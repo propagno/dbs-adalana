@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-014" author="adalana">
+        <comment>Add fiscal fields to account table (document_type, document_number, trade_name, legal_name)</comment>
+        
+        <!-- Add document_type column -->
+        <addColumn tableName="account">
+            <column name="document_type" type="NVARCHAR(10)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add document_number column -->
+        <addColumn tableName="account">
+            <column name="document_number" type="NVARCHAR(20)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add trade_name column (nome fantasia) -->
+        <addColumn tableName="account">
+            <column name="trade_name" type="NVARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add legal_name column (razão social) -->
+        <addColumn tableName="account">
+            <column name="legal_name" type="NVARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add unique filtered index on document_number (only for non-null values) -->
+        <sql>
+            CREATE UNIQUE NONCLUSTERED INDEX idx_account_document_number 
+            ON account(document_number) 
+            WHERE document_number IS NOT NULL;
+        </sql>
+        
+        <!-- Add check constraint for document_type -->
+        <sql>
+            ALTER TABLE account ADD CONSTRAINT ck_account_document_type 
+            CHECK (document_type IS NULL OR document_type IN ('CPF', 'CNPJ'));
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
+

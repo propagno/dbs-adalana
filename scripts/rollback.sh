@@ -22,21 +22,21 @@ case "$ENVIRONMENT" in
     dev)
         DB_SERVICE="db-dev"
         LIQUIBASE_SERVICE="liquibase-dev"
-        DB_NAME=${DB_NAME_DEV:-propagno_db}
+        DB_NAME=${DB_NAME_DEV:-adalana_db}
         DB_PASSWORD=${DB_PASSWORD_DEV:-YourStrong@Passw0rd}
         DB_PORT=1433
         ;;
     staging)
         DB_SERVICE="db-staging"
         LIQUIBASE_SERVICE="liquibase-staging"
-        DB_NAME=${DB_NAME_STAGING:-propagno_db_staging}
+        DB_NAME=${DB_NAME_STAGING:-adalana_db_staging}
         DB_PASSWORD=${DB_PASSWORD_STAGING:-YourStrong@Passw0rd}
         DB_PORT=1434
         ;;
     prod)
         DB_SERVICE="db-prod"
         LIQUIBASE_SERVICE="liquibase-prod"
-        DB_NAME=${DB_NAME_PROD:-propagno_db_prod}
+        DB_NAME=${DB_NAME_PROD:-adalana_db_prod}
         DB_PASSWORD=${DB_PASSWORD_PROD:-YourStrong@Passw0rd}
         DB_PORT=1435
         ;;
@@ -55,7 +55,7 @@ fi
 
 echo "📋 Histórico de changesets antes do rollback:"
 docker run --rm \
-    --network db-propagno-network \
+    --network db-adalana-network \
     -v "$(pwd)/liquibase:/liquibase/changelog" \
     liquibase/liquibase:latest \
     --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
@@ -79,7 +79,7 @@ fi
 if [ "$ROLLBACK_TYPE" = "count" ]; then
     echo "🔄 Executando rollback de $ROLLBACK_VALUE changeset(s)..."
     docker run --rm \
-        --network db-propagno-network \
+        --network db-adalana-network \
         -v "$(pwd)/liquibase:/liquibase/changelog" \
         liquibase/liquibase:latest \
         --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
@@ -90,7 +90,7 @@ if [ "$ROLLBACK_TYPE" = "count" ]; then
 elif [ "$ROLLBACK_TYPE" = "tag" ]; then
     echo "🔄 Executando rollback para tag: $ROLLBACK_VALUE"
     docker run --rm \
-        --network db-propagno-network \
+        --network db-adalana-network \
         -v "$(pwd)/liquibase:/liquibase/changelog" \
         liquibase/liquibase:latest \
         --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \
@@ -109,7 +109,7 @@ if [ $? -eq 0 ]; then
     echo ""
     echo "📋 Histórico de changesets após rollback:"
     docker run --rm \
-        --network db-propagno-network \
+        --network db-adalana-network \
         -v "$(pwd)/liquibase:/liquibase/changelog" \
         liquibase/liquibase:latest \
         --changelog-file=/liquibase/changelog/changelog/db.changelog-master.xml \

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-002" author="adalana">
+        <comment>Create user table for system users (admin, operator, deliverer)</comment>
+        
+        <createTable tableName="user">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password_hash" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(20)"/>
+            <column name="active" type="BIT" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="user" 
+            baseColumnNames="account_id" 
+            constraintName="fk_user_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="user" indexName="idx_user_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="user" indexName="idx_user_email_account" unique="true">
+            <column name="email"/>
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="user" indexName="idx_user_role">
+            <column name="role"/>
+        </createIndex>
+
+        <sql>
+            ALTER TABLE [user] ADD CONSTRAINT ck_user_role CHECK (role IN ('admin', 'operator', 'deliverer'));
+        </sql>
+
+        <rollback>
+            <dropTable tableName="user"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

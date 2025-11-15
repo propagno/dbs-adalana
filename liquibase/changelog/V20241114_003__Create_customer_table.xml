@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-003" author="adalana">
+        <comment>Create customer table for delivery recipients</comment>
+        
+        <createTable tableName="customer">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="address" type="NVARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="preferred_delivery_day" type="VARCHAR(100)"/>
+            <column name="notes" type="NVARCHAR(MAX)"/>
+            <column name="metadata" type="NVARCHAR(MAX)"/>
+            <column name="active" type="BIT" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="customer" 
+            baseColumnNames="account_id" 
+            constraintName="fk_customer_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="customer" indexName="idx_customer_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="customer" indexName="idx_customer_phone">
+            <column name="phone"/>
+        </createIndex>
+
+        <createIndex tableName="customer" indexName="idx_customer_active">
+            <column name="active"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="customer"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

@@ -6,7 +6,29 @@
     http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
 
     <!-- Incluir todas as migrations aqui -->
-    <include file="V1__Initial_schema.xml" relativeToChangelogFile="true"/>
+    <!-- V1 removido para evitar conflito de criação/seleção de database -->
+    
+    <!-- Adalana tables -->
+    <include file="V20241114_001__Create_account_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_002__Create_user_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_003__Create_customer_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_004__Create_product_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_005__Create_subscription_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_006__Create_order_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_007__Create_subscription_exception_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_008__Create_template_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_009__Create_reminder_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_010__Insert_default_templates.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_011__Add_super_admin_and_customer_roles.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_012__Insert_super_admin_user.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_014__Add_account_fiscal_fields.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_015__Add_customer_email_and_type.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_016__Add_subscription_professional_fields.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_017__Add_product_description.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_018__Add_product_unit_type.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_019__Add_product_image_url.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_020__Add_account_image_url.xml" relativeToChangelogFile="true"/>
+    <include file="V20241114_021__Add_product_allows_single_order.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
 

@@ -33,7 +33,7 @@ services:
       - db-network
     command: 
       - --changelog-file=db.changelog-master.xml
-      - --url=jdbc:sqlserver://db-dev:1433;databaseName=${DB_NAME_DEV:-propagno_db};encrypt=true;trustServerCertificate=true
+      - --url=jdbc:sqlserver://db-dev:1433;databaseName=${DB_NAME_DEV:-adalana_db};encrypt=true;trustServerCertificate=true
       - --username=sa
       - --password=${DB_PASSWORD_DEV:-YourStrong@Passw0rd}
       - --driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -75,7 +75,7 @@ services:
       - db-network
     command: 
       - --changelog-file=/liquibase/changelog/db.changelog-master.xml
-      - --url=jdbc:sqlserver://db-staging:1433;databaseName=${DB_NAME_STAGING:-propagno_db_staging};encrypt=true;trustServerCertificate=true
+      - --url=jdbc:sqlserver://db-staging:1433;databaseName=${DB_NAME_STAGING:-adalana_db_staging};encrypt=true;trustServerCertificate=true
       - --username=sa
       - --password=${DB_PASSWORD_STAGING:-YourStrong@Passw0rd}
       - --driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -125,7 +125,7 @@ services:
       - db-network
     command: 
       - --changelog-file=/liquibase/changelog/db.changelog-master.xml
-      - --url=jdbc:sqlserver://db-prod:1433;databaseName=${DB_NAME_PROD:-propagno_db_prod};encrypt=true;trustServerCertificate=true
+      - --url=jdbc:sqlserver://db-prod:1433;databaseName=${DB_NAME_PROD:-adalana_db_prod};encrypt=true;trustServerCertificate=true
       - --username=sa
       - --password=${DB_PASSWORD_PROD:-YourStrong@Passw0rd}
       - --driver=com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -143,5 +143,5 @@ volumes:
 networks:
   db-network:
     driver: bridge
-    name: db-propagno-network
+    name: db-adalana-network
 

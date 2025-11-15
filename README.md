@@ -1,6 +1,6 @@
-# 🗄️ DB Propagno - Repositório de Banco de Dados
+# 🗄️ dbs-adalana - Repositório de Banco de Dados
 
-Repositório dedicado para gerenciamento do banco de dados SQL Server com Liquibase para migrations.
+Repositório dedicado para gerenciamento do banco de dados SQL Server do projeto Adalana com Liquibase para migrations.
 
 ## 📋 Características
 
@@ -14,12 +14,12 @@ Repositório dedicado para gerenciamento do banco de dados SQL Server com Liquib
 ## 🏗️ Estrutura
 
 ```
-db-propagno/
+dbs-adalana/
 ├── docker-compose.yml          # Configuração Docker para todos os ambientes
 ├── liquibase/
 │   └── changelog/
 │       ├── db.changelog-master.xml  # Master changelog
-│       └── V1__Initial_schema.xml   # Migrations
+│       └── V20241114_*.xml          # Migrations Adalana
 ├── scripts/
 │   ├── init.sh                 # Script de inicialização
 │   ├── rollback.sh             # Script de rollback
@@ -40,8 +40,8 @@ db-propagno/
 
 1. **Clone o repositório:**
 ```bash
-git clone git@github.com:propagno/db-propagno.git
-cd db-propagno
+git clone git@github.com:propagno/dbs-adalana.git
+cd dbs-adalana
 ```
 
 2. **Configure as variáveis de ambiente:**
@@ -111,7 +111,7 @@ Crie arquivos `.env.dev`, `.env.staging`, `.env.prod` com:
 
 ```bash
 DB_PASSWORD_DEV=YourStrong@Passw0rd
-DB_NAME_DEV=propagno_db
+DB_NAME_DEV=adalana_db
 ```
 
 ### Portas
@@ -124,7 +124,7 @@ DB_NAME_DEV=propagno_db
 
 **JDBC URL:**
 ```
-jdbc:sqlserver://localhost:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true
+jdbc:sqlserver://localhost:1433;databaseName=adalana_db;encrypt=true;trustServerCertificate=true
 ```
 
 **Credenciais padrão:**
@@ -259,7 +259,7 @@ Para conectar um serviço a este banco de dados:
 services:
   app:
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:sqlserver://db-dev:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true
+      - SPRING_DATASOURCE_URL=jdbc:sqlserver://db-dev:1433;databaseName=adalana_db;encrypt=true;trustServerCertificate=true
       - SPRING_DATASOURCE_USERNAME=sa
       - SPRING_DATASOURCE_PASSWORD=YourStrong@Passw0rd
     networks:
@@ -269,7 +269,7 @@ services:
 Ou conecte via host externo:
 
 ```yaml
-- SPRING_DATASOURCE_URL=jdbc:sqlserver://localhost:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true
+- SPRING_DATASOURCE_URL=jdbc:sqlserver://localhost:1433;databaseName=adalana_db;encrypt=true;trustServerCertificate=true
 ```
 
 ## 🛠️ Troubleshooting
@@ -293,7 +293,7 @@ docker run --rm \
   -v "$(pwd)/liquibase:/liquibase/changelog" \
   liquibase/liquibase:latest \
   --changelog-file=/liquibase/changelog/db.changelog-master.xml \
-  --url="jdbc:sqlserver://db-dev:1433;databaseName=propagno_db;encrypt=true;trustServerCertificate=true" \
+  --url="jdbc:sqlserver://db-dev:1433;databaseName=adalana_db;encrypt=true;trustServerCertificate=true" \
   --username=sa \
   --password="YourStrong@Passw0rd" \
   history

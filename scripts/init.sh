@@ -20,17 +20,17 @@ case "$ENVIRONMENT" in
     dev)
         DB_SERVICE="db-dev"
         LIQUIBASE_SERVICE="liquibase-dev"
-        DB_NAME=${DB_NAME_DEV:-propagno_db}
+        DB_NAME=${DB_NAME_DEV:-adalana_db}
         ;;
     staging)
         DB_SERVICE="db-staging"
         LIQUIBASE_SERVICE="liquibase-staging"
-        DB_NAME=${DB_NAME_STAGING:-propagno_db_staging}
+        DB_NAME=${DB_NAME_STAGING:-adalana_db_staging}
         ;;
     prod)
         DB_SERVICE="db-prod"
         LIQUIBASE_SERVICE="liquibase-prod"
-        DB_NAME=${DB_NAME_PROD:-propagno_db_prod}
+        DB_NAME=${DB_NAME_PROD:-adalana_db_prod}
         ;;
     *)
         echo "❌ Ambiente inválido: $ENVIRONMENT"

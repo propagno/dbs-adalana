@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-015" author="adalana">
+        <comment>Add email and customer_type fields to customer table</comment>
+        
+        <!-- Add email column (nullable initially for existing records) -->
+        <addColumn tableName="customer">
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add customer_type column with default LEAD -->
+        <addColumn tableName="customer">
+            <column name="customer_type" type="VARCHAR(20)" defaultValue="LEAD">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <!-- Update existing customers: set email to a placeholder if null, then make it NOT NULL -->
+        <!-- For existing customers, we'll set a temporary email based on phone if email is null -->
+        <sql>
+            UPDATE customer 
+            SET email = 'temp_' + CAST(id AS VARCHAR(36)) + '@placeholder.com'
+            WHERE email IS NULL;
+        </sql>
+        
+        <!-- Now make email NOT NULL -->
+        <addNotNullConstraint 
+            tableName="customer" 
+            columnName="email" 
+            columnDataType="VARCHAR(255)"/>
+        
+        <!-- Create computed column for lowercase email for case-insensitive uniqueness -->
+        <sql>
+            ALTER TABLE customer 
+            ADD email_lower AS LOWER(email) PERSISTED;
+        </sql>
+        
+        <!-- Create unique index on (account_id, email_lower) for case-insensitive uniqueness -->
+        <sql>
+            CREATE UNIQUE NONCLUSTERED INDEX idx_customer_account_email 
+            ON customer(account_id, email_lower);
+        </sql>
+        
+        <!-- Create index on customer_type for fast queries -->
+        <createIndex tableName="customer" indexName="idx_customer_type">
+            <column name="customer_type"/>
+        </createIndex>
+        
+        <!-- Add check constraint for customer_type -->
+        <sql>
+            ALTER TABLE customer ADD CONSTRAINT ck_customer_type 
+            CHECK (customer_type IN ('LEAD', 'CUSTOMER'));
+        </sql>
+        
+        <!-- Update existing customers: if they have active subscriptions, set type to CUSTOMER -->
+        <sql>
+            UPDATE c
+            SET c.customer_type = 'CUSTOMER'
+            FROM customer c
+            INNER JOIN subscription s ON s.customer_id = c.id
+            WHERE s.status = 'ACTIVE'
+            AND c.customer_type = 'LEAD';
+        </sql>
+        
+    </changeSet>
+
+</databaseChangeLog>
+

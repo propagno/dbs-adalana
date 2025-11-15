@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-007" author="adalana">
+        <comment>Create subscription_exception table for skip/reschedule rules</comment>
+        
+        <createTable tableName="subscription_exception">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="subscription_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exception_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="new_date" type="DATE"/>
+            <column name="reason" type="NVARCHAR(500)"/>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="subscription_exception" 
+            baseColumnNames="subscription_id" 
+            constraintName="fk_subscription_exception_subscription"
+            referencedTableName="subscription" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="subscription_exception" indexName="idx_subscription_exception_subscription_id">
+            <column name="subscription_id"/>
+        </createIndex>
+
+        <createIndex tableName="subscription_exception" indexName="idx_subscription_exception_date">
+            <column name="exception_date"/>
+        </createIndex>
+
+        <addUniqueConstraint 
+            tableName="subscription_exception" 
+            columnNames="subscription_id, exception_date" 
+            constraintName="uq_subscription_exception_date"/>
+
+        <sql>
+            ALTER TABLE subscription_exception ADD CONSTRAINT ck_subscription_exception_action 
+            CHECK (action IN ('skip', 'reschedule'));
+
+            ALTER TABLE subscription_exception ADD CONSTRAINT ck_subscription_exception_new_date 
+            CHECK ((action = 'reschedule' AND new_date IS NOT NULL) OR 
+                   (action = 'skip' AND new_date IS NULL));
+        </sql>
+
+        <rollback>
+            <dropTable tableName="subscription_exception"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

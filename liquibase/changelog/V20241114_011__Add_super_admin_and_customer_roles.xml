@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-011" author="adalana">
+        <comment>Add active field to account, make user.account_id nullable for SUPER_ADMIN, add new roles</comment>
+        
+        <!-- Add active field to account table -->
+        <addColumn tableName="account">
+            <column name="active" type="BIT" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <!-- Create index for active accounts -->
+        <createIndex tableName="account" indexName="idx_account_active">
+            <column name="active"/>
+        </createIndex>
+
+        <!-- Remove foreign key constraint temporarily to allow null account_id -->
+        <dropForeignKeyConstraint baseTableName="user" constraintName="fk_user_account"/>
+        
+        <!-- Remove unique index on email + account_id -->
+        <dropIndex tableName="user" indexName="idx_user_email_account"/>
+        
+        <!-- Make account_id nullable -->
+        <modifyDataType tableName="user" columnName="account_id" newDataType="UNIQUEIDENTIFIER"/>
+        <sql>
+            ALTER TABLE [user] ALTER COLUMN account_id UNIQUEIDENTIFIER NULL;
+        </sql>
+
+        <!-- Recreate foreign key constraint with null handling -->
+        <addForeignKeyConstraint 
+            baseTableName="user" 
+            baseColumnNames="account_id" 
+            constraintName="fk_user_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <!-- Create new unique index: email must be unique per account_id (when not null) -->
+        <!-- For SUPER_ADMIN (account_id is null), email must be globally unique -->
+        <sql>
+            -- Create filtered unique index for users with account_id
+            CREATE UNIQUE NONCLUSTERED INDEX idx_user_email_account_not_null 
+            ON [user](email, account_id) 
+            WHERE account_id IS NOT NULL;
+            
+            -- Create unique index for users without account_id (SUPER_ADMIN)
+            CREATE UNIQUE NONCLUSTERED INDEX idx_user_email_super_admin 
+            ON [user](email) 
+            WHERE account_id IS NULL;
+        </sql>
+
+        <!-- Update role check constraint to include new roles -->
+        <sql>
+            ALTER TABLE [user] DROP CONSTRAINT IF EXISTS ck_user_role;
+            ALTER TABLE [user] ADD CONSTRAINT ck_user_role CHECK (role IN ('admin', 'operator', 'deliverer', 'super_admin', 'customer'));
+        </sql>
+
+        <rollback>
+            <sql>
+                ALTER TABLE [user] DROP CONSTRAINT IF EXISTS ck_user_role;
+                ALTER TABLE [user] ADD CONSTRAINT ck_user_role CHECK (role IN ('admin', 'operator', 'deliverer'));
+            </sql>
+            <dropIndex tableName="user" indexName="idx_user_email_super_admin"/>
+            <dropIndex tableName="user" indexName="idx_user_email_account_not_null"/>
+            <dropForeignKeyConstraint baseTableName="user" constraintName="fk_user_account"/>
+            <sql>
+                ALTER TABLE [user] ALTER COLUMN account_id UNIQUEIDENTIFIER NOT NULL;
+            </sql>
+            <addForeignKeyConstraint 
+                baseTableName="user" 
+                baseColumnNames="account_id" 
+                constraintName="fk_user_account"
+                referencedTableName="account" 
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+            <createIndex tableName="user" indexName="idx_user_email_account" unique="true">
+                <column name="email"/>
+                <column name="account_id"/>
+            </createIndex>
+            <dropIndex tableName="account" indexName="idx_account_active"/>
+            <dropColumn tableName="account" columnName="active"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241114-016" author="adalana">
+        <comment>Add professional fields to subscription table</comment>
+        
+        <!-- Add subscription_notes column -->
+        <addColumn tableName="subscription">
+            <column name="subscription_notes" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add delivery_instructions column -->
+        <addColumn tableName="subscription">
+            <column name="delivery_instructions" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add preferred_delivery_time column -->
+        <addColumn tableName="subscription">
+            <column name="preferred_delivery_time" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add cancellation_reason column -->
+        <addColumn tableName="subscription">
+            <column name="cancellation_reason" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add last_delivery_date column -->
+        <addColumn tableName="subscription">
+            <column name="last_delivery_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add total_deliveries_count column with default 0 -->
+        <addColumn tableName="subscription">
+            <column name="total_deliveries_count" type="INT" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <!-- Add subscription_value column -->
+        <addColumn tableName="subscription">
+            <column name="subscription_value" type="DECIMAL(10,2)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <!-- Update existing subscriptions: set total_deliveries_count to 0 if null -->
+        <sql>
+            UPDATE subscription 
+            SET total_deliveries_count = 0
+            WHERE total_deliveries_count IS NULL;
+        </sql>
+        
+    </changeSet>
+</databaseChangeLog>
+
