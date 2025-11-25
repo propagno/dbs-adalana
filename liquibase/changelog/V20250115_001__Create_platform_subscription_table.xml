@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250115-001" author="adalana">
+        <comment>Create platform_subscription table for platform monetization (demo, entry fee, commission)</comment>
+        
+        <createTable tableName="platform_subscription">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            
+            <column name="status" type="NVARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="demo_start_date" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="demo_end_date" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="entry_fee_paid" type="BIT" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="entry_fee_paid_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+            
+            <column name="commission_percentage" type="DECIMAL(5,4)" defaultValueNumeric="0.15">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="last_billing_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+            
+            <column name="next_billing_date" type="DATE">
+                <constraints nullable="true"/>
+            </column>
+            
+            <column name="total_revenue" type="DECIMAL(15,2)" defaultValueNumeric="0.00">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="total_commission" type="DECIMAL(15,2)" defaultValueNumeric="0.00">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="platform_subscription" 
+            baseColumnNames="account_id" 
+            constraintName="fk_platform_subscription_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="platform_subscription" indexName="idx_platform_subscription_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="platform_subscription" indexName="idx_platform_subscription_status">
+            <column name="status"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="platform_subscription"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

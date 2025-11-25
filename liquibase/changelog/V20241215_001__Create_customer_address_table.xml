@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241215-001" author="adalana">
+        <comment>Create customer_address table for saved customer addresses</comment>
+        
+        <createTable tableName="customer_address">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            
+            <column name="customer_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="label" type="NVARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="address" type="NVARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="is_default" type="BIT" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="customer_address" 
+            baseColumnNames="customer_id" 
+            constraintName="fk_customer_address_customer"
+            referencedTableName="customer" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="customer_address" indexName="idx_customer_address_customer_id">
+            <column name="customer_id"/>
+        </createIndex>
+
+        <createIndex tableName="customer_address" indexName="idx_customer_address_default">
+            <column name="customer_id"/>
+            <column name="is_default"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="customer_address"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-002" author="adalana">
+        <comment>Fix cart session_id unique constraint to allow multiple carts with NULL session_id</comment>
+
+        <!-- Drop the old unique constraint on session_id -->
+        <!-- Find and drop the constraint by checking all unique constraints on the cart table -->
+        <sql>
+            BEGIN
+                DECLARE @constraintName NVARCHAR(255);
+                DECLARE @sql NVARCHAR(MAX);
+                
+                SELECT @constraintName = kc.name
+                FROM sys.key_constraints kc
+                INNER JOIN sys.index_columns ic ON kc.parent_object_id = ic.object_id AND kc.unique_index_id = ic.index_id
+                INNER JOIN sys.columns c ON ic.object_id = c.object_id AND ic.column_id = c.column_id
+                WHERE kc.parent_object_id = OBJECT_ID('cart')
+                AND kc.type = 'UQ'
+                AND c.name = 'session_id';
+                
+                IF @constraintName IS NOT NULL
+                BEGIN
+                    SET @sql = 'ALTER TABLE cart DROP CONSTRAINT ' + QUOTENAME(@constraintName);
+                    EXEC sp_executesql @sql;
+                END
+            END
+        </sql>
+
+        <!-- Create a filtered unique index that only applies when session_id is NOT NULL -->
+        <!-- This allows multiple carts with NULL session_id (authenticated customers) -->
+        <!-- But ensures uniqueness for guest carts (which have a session_id) -->
+        <sql>
+            CREATE UNIQUE NONCLUSTERED INDEX uq_cart_session_id_not_null
+            ON cart (session_id)
+            WHERE session_id IS NOT NULL;
+        </sql>
+
+        <rollback>
+            <dropIndex tableName="cart" indexName="uq_cart_session_id_not_null"/>
+            <addUniqueConstraint
+                tableName="cart"
+                columnNames="session_id"
+                constraintName="uq_cart_session_id"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

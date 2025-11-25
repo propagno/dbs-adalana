@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-001" author="adalana">
+        <comment>Fix order unique constraint to allow multiple orders with NULL subscription_id on same delivery_date</comment>
+        
+        <!-- Drop the old constraint -->
+        <dropUniqueConstraint 
+            tableName="order" 
+            constraintName="uq_order_subscription_delivery"/>
+        
+        <!-- Create a filtered unique index that only applies when subscription_id is NOT NULL -->
+        <!-- This allows multiple orders with NULL subscription_id on the same delivery_date -->
+        <!-- But ensures uniqueness for subscription orders: one subscription can only have one order per delivery_date per account -->
+        <sql>
+            CREATE UNIQUE NONCLUSTERED INDEX uq_order_subscription_delivery 
+            ON [order] (subscription_id, delivery_date, account_id)
+            WHERE subscription_id IS NOT NULL;
+        </sql>
+        
+        <rollback>
+            <dropIndex tableName="order" indexName="uq_order_subscription_delivery"/>
+            <addUniqueConstraint 
+                tableName="order" 
+                columnNames="subscription_id, delivery_date" 
+                constraintName="uq_order_subscription_delivery"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-008" author="adalana">
+        <comment>Fix: Add address column to account table if it doesn't exist</comment>
+        
+        <sql>
+            IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                          WHERE TABLE_NAME = 'account' AND COLUMN_NAME = 'address')
+            BEGIN
+                ALTER TABLE account ADD address VARCHAR(500) NULL;
+            END
+        </sql>
+        
+        <rollback>
+            <sql>
+                IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                          WHERE TABLE_NAME = 'account' AND COLUMN_NAME = 'address')
+                BEGIN
+                    ALTER TABLE account DROP COLUMN address;
+                END
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
+

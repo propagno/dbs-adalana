@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="create-company-registration-request-table" author="adalana">
+        <createTable tableName="company_registration_request">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="company_name" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="admin_name" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="NVARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_type" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_number" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="trade_name" type="NVARCHAR(255)"/>
+            <column name="category" type="NVARCHAR(100)"/>
+            <column name="status" type="VARCHAR(20)" defaultValue="PENDING">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rejection_reason" type="NVARCHAR(500)"/>
+            <column name="reviewed_by" type="UNIQUEIDENTIFIER"/>
+            <column name="reviewed_at" type="DATETIME"/>
+            <column name="created_account_id" type="UNIQUEIDENTIFIER"/>
+            <column name="request_data" type="NVARCHAR(MAX)"/>
+            <column name="created_at" type="DATETIME" defaultValueComputed="GETDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createIndex tableName="company_registration_request" indexName="idx_crr_status">
+            <column name="status"/>
+        </createIndex>
+        
+        <createIndex tableName="company_registration_request" indexName="idx_crr_email">
+            <column name="email"/>
+        </createIndex>
+        
+        <createIndex tableName="company_registration_request" indexName="idx_crr_document_number">
+            <column name="document_number"/>
+        </createIndex>
+        
+        <createIndex tableName="company_registration_request" indexName="idx_crr_created_at">
+            <column name="created_at"/>
+        </createIndex>
+    </changeSet>
+    
+</databaseChangeLog>
+

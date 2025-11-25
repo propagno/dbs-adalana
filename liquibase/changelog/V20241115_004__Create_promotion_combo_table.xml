@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-004" author="adalana">
+        <comment>Create promotion_combo table for combo promotions</comment>
+        
+        <createTable tableName="promotion_combo">
+            <column name="id" type="UNIQUEIDENTIFIER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="promotion_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="combo_name" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="combo_price_cents" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="promotion_combo"
+            baseColumnNames="promotion_id"
+            constraintName="fk_promotion_combo_promotion"
+            referencedTableName="promotion"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex indexName="idx_promotion_combo_promotion" tableName="promotion_combo">
+            <column name="promotion_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+

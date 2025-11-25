@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-005" author="adalana">
+        <comment>Create promotion_combo_item table for combo items</comment>
+        
+        <createTable tableName="promotion_combo_item">
+            <column name="combo_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="promotion_combo_item" columnNames="combo_id, product_id" constraintName="pk_promotion_combo_item"/>
+
+        <addForeignKeyConstraint
+            baseTableName="promotion_combo_item"
+            baseColumnNames="combo_id"
+            constraintName="fk_promotion_combo_item_combo"
+            referencedTableName="promotion_combo"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="promotion_combo_item"
+            baseColumnNames="product_id"
+            constraintName="fk_promotion_combo_item_product"
+            referencedTableName="product"
+            referencedColumnNames="id"
+            onDelete="NO ACTION"/>
+
+        <createIndex indexName="idx_promotion_combo_item_combo" tableName="promotion_combo_item">
+            <column name="combo_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_promotion_combo_item_product" tableName="promotion_combo_item">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+

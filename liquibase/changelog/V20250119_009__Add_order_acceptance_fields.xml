@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-009" author="adalana">
+        <comment>Add order acceptance, rejection, and cancellation fields to order table</comment>
+
+        <!-- Status de aceitação pela empresa -->
+        <addColumn tableName="order">
+            <column name="acceptance_status" type="VARCHAR(30)" defaultValue="pending">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <!-- Motivo de rejeição -->
+        <addColumn tableName="order">
+            <column name="rejection_reason" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Timestamps de aceitação/rejeição -->
+        <addColumn tableName="order">
+            <column name="accepted_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="order">
+            <column name="rejected_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Cancelamento pela empresa -->
+        <addColumn tableName="order">
+            <column name="cancelled_by_company_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="order">
+            <column name="cancellation_reason" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Solicitação de cancelamento pelo cliente -->
+        <addColumn tableName="order">
+            <column name="cancellation_requested_by_customer" type="BIT" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="order">
+            <column name="cancellation_request_reason" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="order">
+            <column name="cancellation_request_status" type="VARCHAR(20)">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="order">
+            <column name="cancellation_requested_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <addColumn tableName="order">
+            <column name="cancellation_request_responded_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <!-- Índices para performance -->
+        <createIndex tableName="order" indexName="idx_order_acceptance_status">
+            <column name="acceptance_status"/>
+        </createIndex>
+
+        <createIndex tableName="order" indexName="idx_order_account_acceptance_status">
+            <column name="account_id"/>
+            <column name="acceptance_status"/>
+        </createIndex>
+
+        <createIndex tableName="order" indexName="idx_order_cancellation_request_status">
+            <column name="cancellation_request_status"/>
+        </createIndex>
+
+        <!-- Optimistic locking version field -->
+        <addColumn tableName="order">
+            <column name="version" type="BIGINT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+
+    </changeSet>
+
+</databaseChangeLog>
+

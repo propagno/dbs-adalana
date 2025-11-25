@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-007" author="adalana">
+        <comment>Create cart_item table</comment>
+        
+        <createTable tableName="cart_item">
+            <column name="id" type="UNIQUEIDENTIFIER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="cart_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="unit_price_cents" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="subtotal_cents" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="cart_item"
+            baseColumnNames="cart_id"
+            constraintName="fk_cart_item_cart"
+            referencedTableName="cart"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="cart_item"
+            baseColumnNames="product_id"
+            constraintName="fk_cart_item_product"
+            referencedTableName="product"
+            referencedColumnNames="id"
+            onDelete="NO ACTION"/>
+
+        <createIndex indexName="idx_cart_item_cart_id" tableName="cart_item">
+            <column name="cart_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_cart_item_product_id" tableName="cart_item">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+

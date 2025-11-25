@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-006" author="adalana">
+        <comment>Create cart table</comment>
+        
+        <createTable tableName="cart">
+            <column name="id" type="UNIQUEIDENTIFIER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="session_id" type="VARCHAR(255)">
+                <constraints nullable="true" unique="true"/>
+            </column>
+            <column name="promotion_code" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="discount_amount_cents" type="INTEGER" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="total_amount_cents" type="INTEGER" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            baseTableName="cart"
+            baseColumnNames="customer_id"
+            constraintName="fk_cart_customer"
+            referencedTableName="customer"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="cart"
+            baseColumnNames="account_id"
+            constraintName="fk_cart_account"
+            referencedTableName="account"
+            referencedColumnNames="id"
+            onDelete="NO ACTION"/>
+
+        <createIndex indexName="idx_cart_customer_id" tableName="cart">
+            <column name="customer_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_cart_account_id" tableName="cart">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_cart_session_id" tableName="cart">
+            <column name="session_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+

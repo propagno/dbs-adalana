@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-006" author="adalana">
+        <comment>Add order_number field to order table for customer reference</comment>
+
+        <!-- Add order_number column -->
+        <addColumn tableName="order">
+            <column name="order_number" type="VARCHAR(50)" remarks="Unique order number for customer reference (format: ORD-YYYYMMDD-XXXXX)">
+                <constraints nullable="true" unique="false"/>
+            </column>
+        </addColumn>
+
+        <!-- Create unique index on order_number -->
+        <createIndex tableName="order" indexName="idx_order_order_number">
+            <column name="order_number"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="order" indexName="idx_order_order_number"/>
+            <dropColumn tableName="order" columnName="order_number"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

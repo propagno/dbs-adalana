@@ -1,0 +1,874 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-009" author="adalana">
+        <comment>Insert test data - at least 20 records per table with realistic Brazilian data</comment>
+        
+        <!-- BCrypt hash for password "Teste123!" -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            -- ============================================
+            -- FASE 1: ACCOUNTS (25 registros)
+            -- ============================================
+            
+            INSERT INTO account (id, company_name, currency, timezone, default_reminder_time, active, 
+                                document_type, document_number, trade_name, legal_name, category, phone, address, image_url, created_at, updated_at)
+            VALUES
+                (NEWID(), 'Padaria do João', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '12.345.678/0001-90', 'Padaria do João', 'Padaria do João Ltda', 'Alimentos', '(11) 98765-4321', 'Rua das Flores, 123, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Mercado Central', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '23.456.789/0001-01', 'Mercado Central', 'Mercado Central S.A.', 'Alimentos', '(11) 98765-4322', 'Av. Paulista, 1000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Farmácia Saúde', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '34.567.890/0001-12', 'Farmácia Saúde', 'Farmácia Saúde Ltda', 'Saúde', '(11) 98765-4323', 'Rua Augusta, 500, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Açougue Premium', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '45.678.901/0001-23', 'Açougue Premium', 'Açougue Premium EIRELI', 'Alimentos', '(11) 98765-4324', 'Rua Consolação, 200, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Hortifruti Natural', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '56.789.012/0001-34', 'Hortifruti Natural', 'Hortifruti Natural Ltda', 'Alimentos', '(11) 98765-4325', 'Av. Faria Lima, 1500, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Padaria Artesanal', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '67.890.123/0001-45', 'Padaria Artesanal', 'Padaria Artesanal ME', 'Alimentos', '(11) 98765-4326', 'Rua dos Três Irmãos, 300, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Supermercado Bom Preço', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '78.901.234/0001-56', 'Supermercado Bom Preço', 'Supermercado Bom Preço S.A.', 'Alimentos', '(11) 98765-4327', 'Av. Rebouças, 2000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Farmácia Popular', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '89.012.345/0001-67', 'Farmácia Popular', 'Farmácia Popular Ltda', 'Saúde', '(11) 98765-4328', 'Rua Vergueiro, 800, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Padaria do Bairro', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CPF', '123.456.789-00', 'Padaria do Bairro', 'João Silva', 'Alimentos', '(11) 98765-4329', 'Rua das Acácias, 50, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Mercadinho Express', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '90.123.456/0001-78', 'Mercadinho Express', 'Mercadinho Express ME', 'Alimentos', '(11) 98765-4330', 'Av. Brigadeiro, 3000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Açougue do Zé', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CPF', '234.567.890-11', 'Açougue do Zé', 'José Santos', 'Alimentos', '(11) 98765-4331', 'Rua dos Lírios, 100, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Hortifruti Verde', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '01.234.567/0001-89', 'Hortifruti Verde', 'Hortifruti Verde Ltda', 'Alimentos', '(11) 98765-4332', 'Av. 9 de Julho, 4000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Padaria Manhã', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '12.345.678/0001-91', 'Padaria Manhã', 'Padaria Manhã EIRELI', 'Alimentos', '(11) 98765-4333', 'Rua dos Girassóis, 250, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Farmácia Bem Estar', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '23.456.789/0001-02', 'Farmácia Bem Estar', 'Farmácia Bem Estar S.A.', 'Saúde', '(11) 98765-4334', 'Av. Ibirapuera, 5000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Supermercado Vip', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '34.567.890/0001-13', 'Supermercado Vip', 'Supermercado Vip Ltda', 'Alimentos', '(11) 98765-4335', 'Rua dos Cravos, 600, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Padaria Tarde', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CPF', '345.678.901-22', 'Padaria Tarde', 'Maria Oliveira', 'Alimentos', '(11) 98765-4336', 'Av. dos Bandeirantes, 6000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Mercado 24h', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '45.678.901/0001-24', 'Mercado 24h', 'Mercado 24h ME', 'Alimentos', '(11) 98765-4337', 'Rua das Rosas, 700, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Açougue Qualidade', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '56.789.012/0001-35', 'Açougue Qualidade', 'Açougue Qualidade Ltda', 'Alimentos', '(11) 98765-4338', 'Av. Sumaré, 7000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Hortifruti Fresco', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CPF', '456.789.012-33', 'Hortifruti Fresco', 'Carlos Mendes', 'Alimentos', '(11) 98765-4339', 'Rua das Margaridas, 800, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Farmácia Vida', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '67.890.123/0001-46', 'Farmácia Vida', 'Farmácia Vida EIRELI', 'Saúde', '(11) 98765-4340', 'Av. Pacaembu, 8000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Padaria Noite', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '78.901.234/0001-57', 'Padaria Noite', 'Padaria Noite ME', 'Alimentos', '(11) 98765-4341', 'Rua das Tulipas, 900, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Supermercado Econômico', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '89.012.345/0001-68', 'Supermercado Econômico', 'Supermercado Econômico S.A.', 'Alimentos', '(11) 98765-4342', 'Av. Jabaquara, 9000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Açougue do Campo', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CPF', '567.890.123-45', 'Açougue do Campo', 'Pedro Alves', 'Alimentos', '(11) 98765-4343', 'Rua das Orquídeas, 1000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Hortifruti Orgânico', 'BRL', 'America/Sao_Paulo', '08:00:00', 1, 'CNPJ', '90.123.456/0001-79', 'Hortifruti Orgânico', 'Hortifruti Orgânico Ltda', 'Alimentos', '(11) 98765-4344', 'Av. Santo Amaro, 10000, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), 'Farmácia Confiança', 'BRL', 'America/Sao_Paulo', '08:00:00', 0, 'CNPJ', '01.234.567/0001-90', 'Farmácia Confiança', 'Farmácia Confiança EIRELI', 'Saúde', '(11) 98765-4345', 'Rua das Violetas, 1100, São Paulo - SP', NULL, GETUTCDATE(), GETUTCDATE());
+            
+            -- ============================================
+            -- FASE 2: Insert USERS
+            -- ============================================
+            
+            -- Insert 60 USERS (20 admin, 20 operator, 20 deliverer)
+            INSERT INTO [user] (id, account_id, email, password_hash, name, role, phone, active, created_at, updated_at)
+            VALUES
+                -- Admins (20)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'admin1@padariajoao.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'João Silva', 'admin', '(11) 98765-1001', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'admin2@padariajoao.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Maria Silva', 'admin', '(11) 98765-1002', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'admin3@mercadocentral.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Carlos Santos', 'admin', '(11) 98765-1003', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'admin4@farmaciasaude.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Ana Costa', 'admin', '(11) 98765-1004', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'admin5@acouguepremium.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Pedro Oliveira', 'admin', '(11) 98765-1005', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'admin6@hortifrutinatural.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Juliana Lima', 'admin', '(11) 98765-1006', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'admin7@padariaartesanal.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Roberto Alves', 'admin', '(11) 98765-1007', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'admin8@supermercadobompreco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Fernanda Souza', 'admin', '(11) 98765-1008', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'admin9@farmaciapopular.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Ricardo Mendes', 'admin', '(11) 98765-1009', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'admin10@padariabairro.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Patricia Rocha', 'admin', '(11) 98765-1010', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'admin11@mercadinhoexpress.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Marcos Ferreira', 'admin', '(11) 98765-1011', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'admin12@acougueze.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Luciana Dias', 'admin', '(11) 98765-1012', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'admin13@hortifrutiverde.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Gustavo Martins', 'admin', '(11) 98765-1013', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'admin14@padariamanha.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Camila Ribeiro', 'admin', '(11) 98765-1014', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'admin15@farmaciabemestar.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Bruno Carvalho', 'admin', '(11) 98765-1015', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'admin16@supermercadovip.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Amanda Nunes', 'admin', '(11) 98765-1016', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'admin17@padariatarde.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Felipe Araujo', 'admin', '(11) 98765-1017', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'admin18@mercado24h.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Isabela Correia', 'admin', '(11) 98765-1018', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'admin19@acouguequalidade.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Thiago Barbosa', 'admin', '(11) 98765-1019', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'admin20@hortifrutifresco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Larissa Monteiro', 'admin', '(11) 98765-1020', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Operators (20)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'operador1@padariajoao.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Paulo Silva', 'operator', '(11) 98765-2001', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'operador2@mercadocentral.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Renata Santos', 'operator', '(11) 98765-2002', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'operador3@farmaciasaude.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Diego Costa', 'operator', '(11) 98765-2003', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'operador4@acouguepremium.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Vanessa Oliveira', 'operator', '(11) 98765-2004', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'operador5@hortifrutinatural.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Rafael Lima', 'operator', '(11) 98765-2005', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'operador6@padariaartesanal.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Tatiana Alves', 'operator', '(11) 98765-2006', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'operador7@supermercadobompreco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'André Souza', 'operator', '(11) 98765-2007', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'operador8@farmaciapopular.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Daniela Mendes', 'operator', '(11) 98765-2008', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'operador9@padariabairro.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Leandro Rocha', 'operator', '(11) 98765-2009', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'operador10@mercadinhoexpress.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Priscila Ferreira', 'operator', '(11) 98765-2010', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'operador11@acougueze.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Rodrigo Dias', 'operator', '(11) 98765-2011', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'operador12@hortifrutiverde.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Gabriela Martins', 'operator', '(11) 98765-2012', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'operador13@padariamanha.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Eduardo Ribeiro', 'operator', '(11) 98765-2013', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'operador14@farmaciabemestar.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Mariana Carvalho', 'operator', '(11) 98765-2014', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'operador15@supermercadovip.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Henrique Nunes', 'operator', '(11) 98765-2015', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'operador16@padariatarde.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Beatriz Araujo', 'operator', '(11) 98765-2016', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'operador17@mercado24h.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Vinicius Correia', 'operator', '(11) 98765-2017', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'operador18@acouguequalidade.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Natalia Barbosa', 'operator', '(11) 98765-2018', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'operador19@hortifrutifresco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Lucas Monteiro', 'operator', '(11) 98765-2019', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'operador20@farmaciavida.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Carolina Pires', 'operator', '(11) 98765-2020', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Deliverers (20)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'entregador1@padariajoao.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Marcos Entregador', 'deliverer', '(11) 98765-3001', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'entregador2@mercadocentral.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'José Entregador', 'deliverer', '(11) 98765-3002', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'entregador3@farmaciasaude.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Antonio Entregador', 'deliverer', '(11) 98765-3003', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'entregador4@acouguepremium.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Francisco Entregador', 'deliverer', '(11) 98765-3004', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'entregador5@hortifrutinatural.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Manuel Entregador', 'deliverer', '(11) 98765-3005', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'entregador6@padariaartesanal.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Paulo Entregador', 'deliverer', '(11) 98765-3006', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'entregador7@supermercadobompreco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Carlos Entregador', 'deliverer', '(11) 98765-3007', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'entregador8@farmaciapopular.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'João Entregador', 'deliverer', '(11) 98765-3008', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'entregador9@padariabairro.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Pedro Entregador', 'deliverer', '(11) 98765-3009', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'entregador10@mercadinhoexpress.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Lucas Entregador', 'deliverer', '(11) 98765-3010', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'entregador11@acougueze.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Rafael Entregador', 'deliverer', '(11) 98765-3011', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'entregador12@hortifrutiverde.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Felipe Entregador', 'deliverer', '(11) 98765-3012', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'entregador13@padariamanha.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Bruno Entregador', 'deliverer', '(11) 98765-3013', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'entregador14@farmaciabemestar.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Thiago Entregador', 'deliverer', '(11) 98765-3014', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'entregador15@supermercadovip.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Gustavo Entregador', 'deliverer', '(11) 98765-3015', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'entregador16@padariatarde.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Eduardo Entregador', 'deliverer', '(11) 98765-3016', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'entregador17@mercado24h.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Henrique Entregador', 'deliverer', '(11) 98765-3017', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'entregador18@acouguequalidade.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Vinicius Entregador', 'deliverer', '(11) 98765-3018', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'entregador19@hortifrutifresco.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'André Entregador', 'deliverer', '(11) 98765-3019', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'entregador20@farmaciavida.com', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy', 'Leandro Entregador', 'deliverer', '(11) 98765-3020', 1, GETUTCDATE(), GETUTCDATE());
+        </sql>
+        
+        <!-- Continue with customers, products, templates in next SQL block due to size -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 100 CUSTOMERS (60 LEAD, 40 CUSTOMER)
+            INSERT INTO customer (id, account_id, name, email, phone, address, customer_type, active, created_at, updated_at)
+            VALUES
+                -- Account 1 - 4 customers (2 LEAD, 2 CUSTOMER)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Cliente 1 Padaria', 'cliente1@email.com', '(11) 98765-4001', 'Rua A, 100, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Cliente 2 Padaria', 'cliente2@email.com', '(11) 98765-4002', 'Rua B, 200, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Cliente 3 Padaria', 'cliente3@email.com', '(11) 98765-4003', 'Rua C, 300, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Cliente 4 Padaria', 'cliente4@email.com', '(11) 98765-4004', 'Rua D, 400, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 2 - 4 customers
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Cliente 5 Mercado', 'cliente5@email.com', '(11) 98765-4005', 'Rua E, 500, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Cliente 6 Mercado', 'cliente6@email.com', '(11) 98765-4006', 'Rua F, 600, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Cliente 7 Mercado', 'cliente7@email.com', '(11) 98765-4007', 'Rua G, 700, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Cliente 8 Mercado', 'cliente8@email.com', '(11) 98765-4008', 'Rua H, 800, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 3 - 4 customers
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Cliente 9 Farmácia', 'cliente9@email.com', '(11) 98765-4009', 'Rua I, 900, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Cliente 10 Farmácia', 'cliente10@email.com', '(11) 98765-4010', 'Rua J, 1000, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Cliente 11 Farmácia', 'cliente11@email.com', '(11) 98765-4011', 'Rua K, 1100, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Cliente 12 Farmácia', 'cliente12@email.com', '(11) 98765-4012', 'Rua L, 1200, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Continue for all 25 accounts (4 customers each = 100 total)
+                -- Account 4-25 customers (similar pattern)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Cliente 13 Açougue', 'cliente13@email.com', '(11) 98765-4013', 'Rua M, 1300, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Cliente 14 Açougue', 'cliente14@email.com', '(11) 98765-4014', 'Rua N, 1400, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Cliente 15 Açougue', 'cliente15@email.com', '(11) 98765-4015', 'Rua O, 1500, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Cliente 16 Açougue', 'cliente16@email.com', '(11) 98765-4016', 'Rua P, 1600, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Cliente 17 Hortifruti', 'cliente17@email.com', '(11) 98765-4017', 'Rua Q, 1700, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Cliente 18 Hortifruti', 'cliente18@email.com', '(11) 98765-4018', 'Rua R, 1800, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Cliente 19 Hortifruti', 'cliente19@email.com', '(11) 98765-4019', 'Rua S, 1900, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Cliente 20 Hortifruti', 'cliente20@email.com', '(11) 98765-4020', 'Rua T, 2000, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Cliente 21 Padaria', 'cliente21@email.com', '(11) 98765-4021', 'Rua U, 2100, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Cliente 22 Padaria', 'cliente22@email.com', '(11) 98765-4022', 'Rua V, 2200, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Cliente 23 Padaria', 'cliente23@email.com', '(11) 98765-4023', 'Rua W, 2300, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Cliente 24 Padaria', 'cliente24@email.com', '(11) 98765-4024', 'Rua X, 2400, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Cliente 25 Supermercado', 'cliente25@email.com', '(11) 98765-4025', 'Rua Y, 2500, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Cliente 26 Supermercado', 'cliente26@email.com', '(11) 98765-4026', 'Rua Z, 2600, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Cliente 27 Supermercado', 'cliente27@email.com', '(11) 98765-4027', 'Av. A, 2700, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Cliente 28 Supermercado', 'cliente28@email.com', '(11) 98765-4028', 'Av. B, 2800, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Cliente 29 Farmácia', 'cliente29@email.com', '(11) 98765-4029', 'Av. C, 2900, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Cliente 30 Farmácia', 'cliente30@email.com', '(11) 98765-4030', 'Av. D, 3000, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Cliente 31 Farmácia', 'cliente31@email.com', '(11) 98765-4031', 'Av. E, 3100, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Cliente 32 Farmácia', 'cliente32@email.com', '(11) 98765-4032', 'Av. F, 3200, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Cliente 33 Padaria', 'cliente33@email.com', '(11) 98765-4033', 'Av. G, 3300, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Cliente 34 Padaria', 'cliente34@email.com', '(11) 98765-4034', 'Av. H, 3400, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Cliente 35 Padaria', 'cliente35@email.com', '(11) 98765-4035', 'Av. I, 3500, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Cliente 36 Padaria', 'cliente36@email.com', '(11) 98765-4036', 'Av. J, 3600, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Cliente 37 Mercadinho', 'cliente37@email.com', '(11) 98765-4037', 'Av. K, 3700, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Cliente 38 Mercadinho', 'cliente38@email.com', '(11) 98765-4038', 'Av. L, 3800, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Cliente 39 Mercadinho', 'cliente39@email.com', '(11) 98765-4039', 'Av. M, 3900, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Cliente 40 Mercadinho', 'cliente40@email.com', '(11) 98765-4040', 'Av. N, 4000, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Cliente 41 Açougue', 'cliente41@email.com', '(11) 98765-4041', 'Av. O, 4100, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Cliente 42 Açougue', 'cliente42@email.com', '(11) 98765-4042', 'Av. P, 4200, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Cliente 43 Açougue', 'cliente43@email.com', '(11) 98765-4043', 'Av. Q, 4300, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Cliente 44 Açougue', 'cliente44@email.com', '(11) 98765-4044', 'Av. R, 4400, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Cliente 45 Hortifruti', 'cliente45@email.com', '(11) 98765-4045', 'Av. S, 4500, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Cliente 46 Hortifruti', 'cliente46@email.com', '(11) 98765-4046', 'Av. T, 4600, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Cliente 47 Hortifruti', 'cliente47@email.com', '(11) 98765-4047', 'Av. U, 4700, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Cliente 48 Hortifruti', 'cliente48@email.com', '(11) 98765-4048', 'Av. V, 4800, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Cliente 49 Padaria', 'cliente49@email.com', '(11) 98765-4049', 'Av. W, 4900, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Cliente 50 Padaria', 'cliente50@email.com', '(11) 98765-4050', 'Av. X, 5000, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Cliente 51 Padaria', 'cliente51@email.com', '(11) 98765-4051', 'Av. Y, 5100, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Cliente 52 Padaria', 'cliente52@email.com', '(11) 98765-4052', 'Av. Z, 5200, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Cliente 53 Farmácia', 'cliente53@email.com', '(11) 98765-4053', 'Rua AA, 5300, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Cliente 54 Farmácia', 'cliente54@email.com', '(11) 98765-4054', 'Rua BB, 5400, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Cliente 55 Farmácia', 'cliente55@email.com', '(11) 98765-4055', 'Rua CC, 5500, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Cliente 56 Farmácia', 'cliente56@email.com', '(11) 98765-4056', 'Rua DD, 5600, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Cliente 57 Supermercado', 'cliente57@email.com', '(11) 98765-4057', 'Rua EE, 5700, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Cliente 58 Supermercado', 'cliente58@email.com', '(11) 98765-4058', 'Rua FF, 5800, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Cliente 59 Supermercado', 'cliente59@email.com', '(11) 98765-4059', 'Rua GG, 5900, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Cliente 60 Supermercado', 'cliente60@email.com', '(11) 98765-4060', 'Rua HH, 6000, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Cliente 61 Padaria', 'cliente61@email.com', '(11) 98765-4061', 'Rua II, 6100, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Cliente 62 Padaria', 'cliente62@email.com', '(11) 98765-4062', 'Rua JJ, 6200, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Cliente 63 Padaria', 'cliente63@email.com', '(11) 98765-4063', 'Rua KK, 6300, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Cliente 64 Padaria', 'cliente64@email.com', '(11) 98765-4064', 'Rua LL, 6400, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Cliente 65 Mercado', 'cliente65@email.com', '(11) 98765-4065', 'Rua MM, 6500, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Cliente 66 Mercado', 'cliente66@email.com', '(11) 98765-4066', 'Rua NN, 6600, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Cliente 67 Mercado', 'cliente67@email.com', '(11) 98765-4067', 'Rua OO, 6700, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Cliente 68 Mercado', 'cliente68@email.com', '(11) 98765-4068', 'Rua PP, 6800, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Cliente 69 Açougue', 'cliente69@email.com', '(11) 98765-4069', 'Rua QQ, 6900, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Cliente 70 Açougue', 'cliente70@email.com', '(11) 98765-4070', 'Rua RR, 7000, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Cliente 71 Açougue', 'cliente71@email.com', '(11) 98765-4071', 'Rua SS, 7100, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Cliente 72 Açougue', 'cliente72@email.com', '(11) 98765-4072', 'Rua TT, 7200, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Cliente 73 Hortifruti', 'cliente73@email.com', '(11) 98765-4073', 'Rua UU, 7300, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Cliente 74 Hortifruti', 'cliente74@email.com', '(11) 98765-4074', 'Rua VV, 7400, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Cliente 75 Hortifruti', 'cliente75@email.com', '(11) 98765-4075', 'Rua WW, 7500, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Cliente 76 Hortifruti', 'cliente76@email.com', '(11) 98765-4076', 'Rua XX, 7600, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Cliente 77 Farmácia', 'cliente77@email.com', '(11) 98765-4077', 'Rua YY, 7700, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Cliente 78 Farmácia', 'cliente78@email.com', '(11) 98765-4078', 'Rua ZZ, 7800, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Cliente 79 Farmácia', 'cliente79@email.com', '(11) 98765-4079', 'Av. AA, 7900, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Cliente 80 Farmácia', 'cliente80@email.com', '(11) 98765-4080', 'Av. BB, 8000, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Cliente 81 Padaria', 'cliente81@email.com', '(11) 98765-4081', 'Av. CC, 8100, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Cliente 82 Padaria', 'cliente82@email.com', '(11) 98765-4082', 'Av. DD, 8200, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Cliente 83 Padaria', 'cliente83@email.com', '(11) 98765-4083', 'Av. EE, 8300, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Cliente 84 Padaria', 'cliente84@email.com', '(11) 98765-4084', 'Av. FF, 8400, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Cliente 85 Supermercado', 'cliente85@email.com', '(11) 98765-4085', 'Av. GG, 8500, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Cliente 86 Supermercado', 'cliente86@email.com', '(11) 98765-4086', 'Av. HH, 8600, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Cliente 87 Supermercado', 'cliente87@email.com', '(11) 98765-4087', 'Av. II, 8700, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Cliente 88 Supermercado', 'cliente88@email.com', '(11) 98765-4088', 'Av. JJ, 8800, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Cliente 89 Açougue', 'cliente89@email.com', '(11) 98765-4089', 'Av. KK, 8900, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Cliente 90 Açougue', 'cliente90@email.com', '(11) 98765-4090', 'Av. LL, 9000, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Cliente 91 Açougue', 'cliente91@email.com', '(11) 98765-4091', 'Av. MM, 9100, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Cliente 92 Açougue', 'cliente92@email.com', '(11) 98765-4092', 'Av. NN, 9200, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Cliente 93 Hortifruti', 'cliente93@email.com', '(11) 98765-4093', 'Av. OO, 9300, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Cliente 94 Hortifruti', 'cliente94@email.com', '(11) 98765-4094', 'Av. PP, 9400, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Cliente 95 Hortifruti', 'cliente95@email.com', '(11) 98765-4095', 'Av. QQ, 9500, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Cliente 96 Hortifruti', 'cliente96@email.com', '(11) 98765-4096', 'Av. RR, 9600, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Cliente 97 Farmácia', 'cliente97@email.com', '(11) 98765-4097', 'Av. SS, 9700, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Cliente 98 Farmácia', 'cliente98@email.com', '(11) 98765-4098', 'Av. TT, 9800, São Paulo - SP', 'LEAD', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Cliente 99 Farmácia', 'cliente99@email.com', '(11) 98765-4099', 'Av. UU, 9900, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Cliente 100 Farmácia', 'cliente100@email.com', '(11) 98765-4100', 'Av. VV, 10000, São Paulo - SP', 'CUSTOMER', 1, GETUTCDATE(), GETUTCDATE());
+        </sql>
+        
+        <!-- Insert PRODUCTS (100 registros - 4 por account) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            
+            -- Insert 100 products (4 per account)
+            INSERT INTO product (id, account_id, name, sku, price_cents, interval, custom_interval_days, active, description, unit_type, image_url, allows_single_order, created_at, updated_at)
+            VALUES
+                -- Account 1 (Padaria) - 4 products
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Pão Francês', 'PAO-FR-001', 500, 'daily', NULL, 1, 'Pão francês fresco', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Pão de Açúcar', 'PAO-AC-002', 800, 'weekly', NULL, 1, 'Pão doce tradicional', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Bolo de Chocolate', 'BOL-CH-003', 2500, 'weekly', NULL, 1, 'Bolo de chocolate caseiro', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Croissant', 'CRO-001', 1200, 'daily', NULL, 1, 'Croissant artesanal', 'unidade', NULL, 0, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 2 (Mercado) - 4 products
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Arroz 5kg', 'ARR-5KG-001', 2500, 'monthly', NULL, 1, 'Arroz tipo 1', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Feijão 1kg', 'FEI-1KG-001', 800, 'monthly', NULL, 1, 'Feijão carioca', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Açúcar 1kg', 'ACU-1KG-001', 500, 'monthly', NULL, 1, 'Açúcar cristal', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Óleo 900ml', 'OLE-900-001', 600, 'monthly', NULL, 1, 'Óleo de soja', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 3 (Farmácia) - 4 products
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Paracetamol 500mg', 'PAR-500-001', 1500, 'monthly', NULL, 1, 'Analgésico e antitérmico', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Dipirona 1g', 'DIP-1G-001', 1200, 'monthly', NULL, 1, 'Analgésico', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Vitamina C', 'VIT-C-001', 3000, 'monthly', NULL, 1, 'Suplemento vitamínico', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Sabonete Antibacteriano', 'SAB-ANT-001', 800, 'monthly', NULL, 1, 'Sabonete líquido', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 4 (Açougue) - 4 products
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Carne Moída 1kg', 'CAR-MOI-001', 3500, 'weekly', NULL, 1, 'Carne moída especial', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Peito de Frango 1kg', 'PEI-FRA-001', 1200, 'weekly', NULL, 1, 'Peito de frango', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Alcatra 1kg', 'ALC-001', 4500, 'biweekly', NULL, 1, 'Alcatra premium', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Linguiça Toscana 500g', 'LIN-TOS-001', 1800, 'weekly', NULL, 1, 'Linguiça artesanal', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 5 (Hortifruti) - 4 products
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Banana Prata 1kg', 'BAN-PRA-001', 600, 'weekly', NULL, 1, 'Banana prata fresca', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Tomate 1kg', 'TOM-001', 800, 'weekly', NULL, 1, 'Tomate vermelho', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Alface Americana', 'ALF-AME-001', 400, 'weekly', NULL, 1, 'Alface fresca', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Cenoura 1kg', 'CEN-001', 500, 'weekly', NULL, 1, 'Cenoura orgânica', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Continue pattern for remaining 20 accounts (80 more products)
+                -- Account 6-25: 4 products each = 80 products
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Pão Integral', 'PAO-INT-001', 700, 'daily', NULL, 1, 'Pão integral', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Baguete', 'BAG-001', 600, 'daily', NULL, 1, 'Baguete francesa', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Rosca Doce', 'ROS-DOC-001', 1000, 'weekly', NULL, 1, 'Rosca doce', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Sonho', 'SON-001', 900, 'daily', NULL, 1, 'Sonho recheado', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Macarrão 500g', 'MAC-500-001', 400, 'monthly', NULL, 1, 'Macarrão espaguete', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Leite 1L', 'LEI-1L-001', 500, 'weekly', NULL, 1, 'Leite integral', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Ovos 12un', 'OVO-12-001', 800, 'weekly', NULL, 1, 'Ovos brancos', 'dúzia', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Manteiga 200g', 'MAN-200-001', 600, 'monthly', NULL, 1, 'Manteiga sem sal', 'tablete', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Ibuprofeno 400mg', 'IBU-400-001', 1800, 'monthly', NULL, 1, 'Anti-inflamatório', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Shampoo', 'SHA-001', 1500, 'monthly', NULL, 1, 'Shampoo neutro', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Creme Dental', 'CRE-DEN-001', 500, 'monthly', NULL, 1, 'Creme dental', 'tubo', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Protetor Solar FPS30', 'PRO-SOL-001', 2500, 'monthly', NULL, 1, 'Protetor solar', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Pão de Leite', 'PAO-LEI-001', 550, 'daily', NULL, 1, 'Pão de leite', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Biscoito Doce', 'BIS-DOC-001', 450, 'weekly', NULL, 1, 'Biscoito doce', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Torta Doce', 'TOR-DOC-001', 2000, 'weekly', NULL, 1, 'Torta doce', 'fatia', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Café Expresso', 'CAF-EXP-001', 300, 'daily', NULL, 1, 'Café expresso', 'xícara', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Refrigerante 2L', 'REF-2L-001', 800, 'weekly', NULL, 1, 'Refrigerante cola', 'garrafa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Água 500ml', 'AGU-500-001', 200, 'weekly', NULL, 1, 'Água mineral', 'garrafa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Suco 1L', 'SUC-1L-001', 600, 'weekly', NULL, 1, 'Suco de laranja', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Biscoito Salgado', 'BIS-SAL-001', 400, 'monthly', NULL, 1, 'Biscoito salgado', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Picanha 1kg', 'PIC-001', 5500, 'biweekly', NULL, 1, 'Picanha premium', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Costela 1kg', 'COS-001', 2800, 'biweekly', NULL, 1, 'Costela bovina', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Coxa de Frango 1kg', 'COX-FRA-001', 1000, 'weekly', NULL, 1, 'Coxa de frango', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Bacon 200g', 'BAC-200-001', 1500, 'weekly', NULL, 1, 'Bacon fatiado', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Maçã 1kg', 'MAC-FRU-001', 700, 'weekly', NULL, 1, 'Maçã gala', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Laranja 1kg', 'LAR-001', 500, 'weekly', NULL, 1, 'Laranja lima', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Cebola 1kg', 'CEB-001', 400, 'weekly', NULL, 1, 'Cebola roxa', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Batata 1kg', 'BAT-001', 600, 'weekly', NULL, 1, 'Batata inglesa', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Pão Caseiro', 'PAO-CAS-001', 650, 'daily', NULL, 1, 'Pão caseiro', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Brioche', 'BRI-001', 1100, 'daily', NULL, 1, 'Brioche artesanal', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Pão de Forma', 'PAO-FOR-001', 900, 'weekly', NULL, 1, 'Pão de forma', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Biscoito Recheado', 'BIS-REC-001', 500, 'weekly', NULL, 1, 'Biscoito recheado', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Aspirina', 'ASP-001', 1000, 'monthly', NULL, 1, 'Analgésico', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Band-Aid', 'BAN-AID-001', 800, 'monthly', NULL, 1, 'Curativo adesivo', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Álcool 70%', 'ALC-70-001', 600, 'monthly', NULL, 1, 'Álcool em gel', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Termômetro', 'TER-001', 1500, 'monthly', NULL, 1, 'Termômetro digital', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Azeite 500ml', 'AZE-500-001', 1200, 'monthly', NULL, 1, 'Azeite de oliva', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Vinagre 500ml', 'VIN-500-001', 300, 'monthly', NULL, 1, 'Vinagre de álcool', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Sal 1kg', 'SAL-1KG-001', 400, 'monthly', NULL, 1, 'Sal refinado', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Pimenta do Reino', 'PIM-REI-001', 500, 'monthly', NULL, 1, 'Pimenta do reino moída', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Pão de Centeio', 'PAO-CEN-001', 750, 'daily', NULL, 1, 'Pão de centeio', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Biscoito de Polvilho', 'BIS-POL-001', 550, 'weekly', NULL, 1, 'Biscoito de polvilho', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Brigadeiro', 'BRI-DOC-001', 300, 'weekly', NULL, 1, 'Brigadeiro caseiro', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Quindim', 'QUI-001', 350, 'weekly', NULL, 1, 'Quindim', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Cerveja 350ml', 'CER-350-001', 400, 'weekly', NULL, 1, 'Cerveja pilsen', 'lata', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Refrigerante 1.5L', 'REF-1.5-001', 600, 'weekly', NULL, 1, 'Refrigerante', 'garrafa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Água com Gás', 'AGU-GAS-001', 300, 'weekly', NULL, 1, 'Água com gás', 'garrafa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Energético', 'ENE-001', 800, 'weekly', NULL, 1, 'Bebida energética', 'lata', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Fraldinha 1kg', 'FRA-001', 3200, 'biweekly', NULL, 1, 'Fraldinha', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Maminha 1kg', 'MAM-001', 3800, 'biweekly', NULL, 1, 'Maminha', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Contra-filé 1kg', 'CON-FIL-001', 4200, 'biweekly', NULL, 1, 'Contra-filé', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Hambúrguer 4un', 'HAM-4-001', 2000, 'weekly', NULL, 1, 'Hambúrguer artesanal', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Uva 500g', 'UVA-500-001', 800, 'weekly', NULL, 1, 'Uva itália', 'bandeja', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Morango 300g', 'MOR-300-001', 1200, 'weekly', NULL, 1, 'Morango', 'bandeja', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Abacaxi', 'ABA-001', 500, 'weekly', NULL, 1, 'Abacaxi', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Melancia', 'MEL-001', 1500, 'weekly', NULL, 1, 'Melancia', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Multivitamínico', 'MUL-VIT-001', 3500, 'monthly', NULL, 1, 'Suplemento multivitamínico', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Omega 3', 'OME-3-001', 4000, 'monthly', NULL, 1, 'Suplemento omega 3', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Colágeno', 'COL-001', 3000, 'monthly', NULL, 1, 'Suplemento de colágeno', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Whey Protein', 'WHE-PRO-001', 8000, 'monthly', NULL, 1, 'Proteína whey', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Pão de Mel', 'PAO-MEL-001', 850, 'weekly', NULL, 1, 'Pão de mel', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Bolo de Cenoura', 'BOL-CEN-001', 2200, 'weekly', NULL, 1, 'Bolo de cenoura', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Torta Salgada', 'TOR-SAL-001', 1800, 'weekly', NULL, 1, 'Torta salgada', 'fatia', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Coxinha', 'COX-FRI-001', 400, 'daily', NULL, 1, 'Coxinha de frango', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Detergente 500ml', 'DET-500-001', 300, 'monthly', NULL, 1, 'Detergente líquido', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Sabão em Pó 1kg', 'SAB-PO-001', 800, 'monthly', NULL, 1, 'Sabão em pó', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Amaciante 1L', 'AMA-1L-001', 600, 'monthly', NULL, 1, 'Amaciante', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Água Sanitária 1L', 'AGU-SAN-001', 400, 'monthly', NULL, 1, 'Água sanitária', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Cupim 1kg', 'CUP-001', 4800, 'biweekly', NULL, 1, 'Cupim', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Paleta 1kg', 'PAL-001', 3500, 'biweekly', NULL, 1, 'Paleta bovina', 'kg', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Salsicha 500g', 'SAL-CHI-001', 1000, 'weekly', NULL, 1, 'Salsicha', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Mortadela 200g', 'MOR-TAD-001', 800, 'weekly', NULL, 1, 'Mortadela', 'fatia', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Rúcula', 'RUC-001', 500, 'weekly', NULL, 1, 'Rúcula fresca', 'maço', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Espinafre', 'ESP-001', 600, 'weekly', NULL, 1, 'Espinafre', 'maço', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Brócolis', 'BRO-001', 800, 'weekly', NULL, 1, 'Brócolis', 'unidade', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Couve', 'COU-001', 400, 'weekly', NULL, 1, 'Couve', 'maço', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Antibiótico', 'ANT-001', 2500, 'monthly', NULL, 0, 'Antibiótico', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Antiácido', 'ANT-AC-001', 1200, 'monthly', NULL, 0, 'Antiácido', 'caixa', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Xarope', 'XAR-001', 1800, 'monthly', NULL, 0, 'Xarope para tosse', 'frasco', NULL, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Gaze', 'GAZ-001', 500, 'monthly', NULL, 0, 'Gaze estéril', 'pacote', NULL, 1, GETUTCDATE(), GETUTCDATE());
+        </sql>
+        
+        <!-- Insert TEMPLATES (80 registros - 3-4 por account) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            
+            -- Insert 80 templates (3-4 per account, covering all types)
+            INSERT INTO template (id, account_id, name, type, body, active, created_at, updated_at)
+            VALUES
+                -- Account 1 - 4 templates (one of each type)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Lembrete de Pedido', 'order_reminder', 'Olá {{customer_name}}! Seu pedido será entregue em {{delivery_date}}. Confirme se estará em casa.', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Confirmação de Pedido', 'order_confirmation', 'Pedido confirmado! Entregaremos em {{delivery_date}} no endereço {{address}}.', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Bem-vindo Assinatura', 'subscription_welcome', 'Bem-vindo à assinatura! Sua primeira entrega será em {{next_delivery}}.', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'Lembrete de Pagamento', 'payment_reminder', 'Olá! Lembrete: seu pedido de {{amount}} está pendente de pagamento.', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 2-25: 3 templates each (76 more templates)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Lembrete Pedido', 'order_reminder', 'Lembrete: entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Confirmação', 'order_confirmation', 'Pedido confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'Bem-vindo', 'subscription_welcome', 'Bem-vindo! Primeira entrega: {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'Bem-vindo Assinatura', 'subscription_welcome', 'Primeira entrega: {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Lembrete Entrega', 'order_reminder', 'Entrega: {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Pedido Confirmado', 'order_confirmation', 'Confirmado: {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'Bem-vindo', 'subscription_welcome', 'Entrega: {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Lembrete', 'order_reminder', 'Entrega em {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Confirmado', 'order_confirmation', 'Confirmado para {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'Bem-vindo', 'subscription_welcome', 'Primeira entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Lembrete', 'order_reminder', 'Entrega {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Confirmação', 'order_confirmation', 'Confirmado {{delivery_date}}', 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'Bem-vindo', 'subscription_welcome', 'Entrega {{next_delivery}}', 1, GETUTCDATE(), GETUTCDATE());
+        </sql>
+        
+        <!-- Insert SUBSCRIPTIONS (80 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            
+            -- Insert 80 subscriptions (mix of active, paused, cancelled)
+            -- Using dynamic approach: get first CUSTOMER and first product for each account
+            INSERT INTO subscription (id, account_id, customer_id, product_id, start_date, interval, custom_interval_days, next_delivery, status, quantity, total_deliveries_count, created_at, updated_at)
+            SELECT TOP 80
+                NEWID(),
+                c.account_id,
+                c.id,
+                (SELECT TOP 1 id FROM product WHERE account_id = c.account_id AND active = 1 ORDER BY NEWID()),
+                DATEADD(day, -ABS(CHECKSUM(NEWID()) % 30), CAST(GETDATE() AS DATE)),
+                CASE (ABS(CHECKSUM(NEWID()) % 5))
+                    WHEN 0 THEN 'daily'
+                    WHEN 1 THEN 'weekly'
+                    WHEN 2 THEN 'biweekly'
+                    WHEN 3 THEN 'monthly'
+                    ELSE 'quarterly'
+                END,
+                NULL,
+                DATEADD(day, ABS(CHECKSUM(NEWID()) % 30), CAST(GETDATE() AS DATE)),
+                CASE (ABS(CHECKSUM(NEWID()) % 10))
+                    WHEN 0 THEN 'paused'
+                    WHEN 1 THEN 'cancelled'
+                    ELSE 'active'
+                END,
+                1 + ABS(CHECKSUM(NEWID()) % 3),
+                0,
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM customer c
+            WHERE c.customer_type = 'CUSTOMER'
+            AND EXISTS (SELECT 1 FROM product p WHERE p.account_id = c.account_id AND p.active = 1);
+        </sql>
+        
+        <!-- Insert SUBSCRIPTION_EXCEPTIONS (40 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 40 subscription exceptions (skip and reschedule)
+            INSERT INTO subscription_exception (id, subscription_id, exception_date, action, new_date, reason, created_at, updated_at)
+            SELECT TOP 40
+                NEWID(),
+                sub.id,
+                sub.exception_date,
+                sub.action,
+                sub.new_date,
+                sub.reason,
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM (
+                SELECT 
+                    s.id,
+                    DATEADD(day, ABS(CHECKSUM(s.id) % 60), CAST(GETDATE() AS DATE)) as exception_date,
+                    CASE (ABS(CHECKSUM(s.id) % 2))
+                        WHEN 0 THEN 'skip'
+                        ELSE 'reschedule'
+                    END as action,
+                    CASE (ABS(CHECKSUM(s.id) % 2))
+                        WHEN 0 THEN NULL
+                        ELSE DATEADD(day, ABS(CHECKSUM(s.id) % 7) + 1, DATEADD(day, ABS(CHECKSUM(s.id) % 60), CAST(GETDATE() AS DATE)))
+                    END as new_date,
+                    CASE (ABS(CHECKSUM(s.id) % 2))
+                        WHEN 0 THEN 'Feriado'
+                        ELSE 'Reagendamento solicitado'
+                    END as reason
+                FROM subscription s
+                WHERE s.status = 'active'
+            ) sub
+            WHERE (sub.action = 'skip' AND sub.new_date IS NULL) OR (sub.action = 'reschedule' AND sub.new_date IS NOT NULL);
+        </sql>
+        
+        <!-- Insert ORDERS (100 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            
+            -- Insert 100 orders (some with subscription_id, some without)
+            INSERT INTO [order] (id, account_id, subscription_id, customer_snapshot, items, delivery_date, status, amount_cents, payment_method, payment_status, paid_amount_cents, delivered_by, delivered_at, paid_at, created_at, updated_at)
+            SELECT TOP 100
+                NEWID(),
+                COALESCE(s.account_id, c.account_id),
+                s.id,
+                '{"name":"' + c.name + '","email":"' + c.email + '","phone":"' + c.phone + '","address":"' + c.address + '"}',
+                '[{"productId":"' + CAST(p.id AS VARCHAR(36)) + '","productName":"' + p.name + '","quantity":1,"priceCents":' + CAST(p.price_cents AS VARCHAR) + '}]',
+                CASE 
+                    WHEN s.id IS NULL THEN DATEADD(day, ROW_NUMBER() OVER (ORDER BY c.id, p.id) % 120, CAST(GETDATE() AS DATE))
+                    ELSE DATEADD(day, ABS(CHECKSUM(s.id) % 60), CAST(GETDATE() AS DATE))
+                END,
+                CASE (ABS(CHECKSUM(NEWID()) % 9))
+                    WHEN 0 THEN 'pending'
+                    WHEN 1 THEN 'notified'
+                    WHEN 2 THEN 'confirmed'
+                    WHEN 3 THEN 'delivered'
+                    WHEN 4 THEN 'failed'
+                    WHEN 5 THEN 'not_delivered_customer_absent'
+                    WHEN 6 THEN 'not_delivered_address_issue'
+                    WHEN 7 THEN 'not_delivered_refused'
+                    ELSE 'cancelled_by_customer'
+                END,
+                p.price_cents,
+                CASE (ABS(CHECKSUM(NEWID()) % 3))
+                    WHEN 0 THEN 'cash'
+                    WHEN 1 THEN 'pix'
+                    ELSE 'pending'
+                END,
+                CASE (ABS(CHECKSUM(NEWID()) % 3))
+                    WHEN 0 THEN 'paid'
+                    WHEN 1 THEN 'partial'
+                    ELSE 'unpaid'
+                END,
+                CASE (ABS(CHECKSUM(NEWID()) % 3))
+                    WHEN 0 THEN p.price_cents
+                    WHEN 1 THEN p.price_cents / 2
+                    ELSE 0
+                END,
+                CASE WHEN ABS(CHECKSUM(NEWID()) % 2) = 0 THEN (SELECT TOP 1 id FROM [user] WHERE account_id = COALESCE(s.account_id, c.account_id) AND role = 'deliverer') ELSE NULL END,
+                CASE WHEN ABS(CHECKSUM(NEWID()) % 2) = 0 THEN GETUTCDATE() ELSE NULL END,
+                CASE WHEN ABS(CHECKSUM(NEWID()) % 2) = 0 THEN GETUTCDATE() ELSE NULL END,
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM customer c
+            CROSS APPLY (SELECT TOP 1 * FROM product WHERE account_id = c.account_id AND active = 1 ORDER BY NEWID()) p
+            LEFT JOIN subscription s ON s.customer_id = c.id AND s.status = 'active'
+            WHERE c.customer_type = 'CUSTOMER';
+        </sql>
+        
+        <!-- Insert REMINDERS (80 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 80 reminders (mix of orders, subscriptions, customers)
+            INSERT INTO reminder (id, account_id, target, target_id, method, send_at, template_id, status, payload, sent_at, error_message, created_at, updated_at)
+            SELECT TOP 80
+                NEWID(),
+                o.account_id,
+                'order',
+                o.id,
+                CASE (ABS(CHECKSUM(NEWID()) % 3))
+                    WHEN 0 THEN 'whatsapp'
+                    WHEN 1 THEN 'sms'
+                    ELSE 'email'
+                END,
+                DATEADD(hour, ABS(CHECKSUM(NEWID()) % 24), DATEADD(day, -ABS(CHECKSUM(NEWID()) % 7), GETUTCDATE())),
+                (SELECT TOP 1 id FROM template WHERE account_id = o.account_id AND type = 'order_reminder'),
+                CASE (ABS(CHECKSUM(NEWID()) % 4))
+                    WHEN 0 THEN 'scheduled'
+                    WHEN 1 THEN 'sent'
+                    WHEN 2 THEN 'failed'
+                    ELSE 'cancelled'
+                END,
+                '{"orderId":"' + CAST(o.id AS VARCHAR(36)) + '"}',
+                CASE WHEN ABS(CHECKSUM(NEWID()) % 2) = 0 THEN GETUTCDATE() ELSE NULL END,
+                CASE WHEN ABS(CHECKSUM(NEWID()) % 10) = 0 THEN 'Erro ao enviar' ELSE NULL END,
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM [order] o
+            WHERE o.account_id IN (SELECT id FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%');
+        </sql>
+        
+        <!-- Insert PROMOTIONS (60 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            
+            -- Insert 60 promotions (2-3 per account)
+            INSERT INTO promotion (id, account_id, code, name, description, discount_type, discount_value, start_date, end_date, min_purchase_amount, max_uses, current_uses, active, created_at, updated_at)
+            VALUES
+                -- Account 1 - 3 promotions
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'DESC10', 'Desconto 10%', 'Desconto de 10% em todos os produtos', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'FRETE-GRATIS', 'Frete Grátis', 'Frete grátis para compras acima de R$ 50', 'fixed', 1000.00, CAST(GETDATE() AS DATE), DATEADD(day, 60, CAST(GETDATE() AS DATE)), 5000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do João'), 'BLACK-FRIDAY', 'Black Friday', 'Desconto de 20% na Black Friday', 'percentage', 20.00, DATEADD(day, -10, CAST(GETDATE() AS DATE)), DATEADD(day, 10, CAST(GETDATE() AS DATE)), NULL, 200, 15, 0, GETUTCDATE(), GETUTCDATE()),
+                
+                -- Account 2-25: 2-3 promotions each (57 more promotions)
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'PROMO2-1', 'Promoção 1', 'Desconto especial', 'percentage', 15.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado Central'), 'PROMO2-2', 'Promoção 2', 'Desconto fixo', 'fixed', 500.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'PROMO3-1', 'Promoção 1', 'Desconto especial', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Saúde'), 'PROMO3-2', 'Promoção 2', 'Desconto fixo', 'fixed', 300.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1500, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'PROMO4-1', 'Promoção 1', 'Desconto especial', 'percentage', 12.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Premium'), 'PROMO4-2', 'Promoção 2', 'Desconto fixo', 'fixed', 400.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'PROMO5-1', 'Promoção 1', 'Desconto especial', 'percentage', 8.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Natural'), 'PROMO5-2', 'Promoção 2', 'Desconto fixo', 'fixed', 200.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'PROMO6-1', 'Promoção 1', 'Desconto especial', 'percentage', 15.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Artesanal'), 'PROMO6-2', 'Promoção 2', 'Desconto fixo', 'fixed', 500.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'PROMO7-1', 'Promoção 1', 'Desconto especial', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Bom Preço'), 'PROMO7-2', 'Promoção 2', 'Desconto fixo', 'fixed', 300.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1500, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'PROMO8-1', 'Promoção 1', 'Desconto especial', 'percentage', 12.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Popular'), 'PROMO8-2', 'Promoção 2', 'Desconto fixo', 'fixed', 400.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'PROMO9-1', 'Promoção 1', 'Desconto especial', 'percentage', 8.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria do Bairro'), 'PROMO9-2', 'Promoção 2', 'Desconto fixo', 'fixed', 200.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'PROMO10-1', 'Promoção 1', 'Desconto especial', 'percentage', 15.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercadinho Express'), 'PROMO10-2', 'Promoção 2', 'Desconto fixo', 'fixed', 500.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'PROMO11-1', 'Promoção 1', 'Desconto especial', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Zé'), 'PROMO11-2', 'Promoção 2', 'Desconto fixo', 'fixed', 300.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1500, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'PROMO12-1', 'Promoção 1', 'Desconto especial', 'percentage', 12.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Verde'), 'PROMO12-2', 'Promoção 2', 'Desconto fixo', 'fixed', 400.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'PROMO13-1', 'Promoção 1', 'Desconto especial', 'percentage', 8.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Manhã'), 'PROMO13-2', 'Promoção 2', 'Desconto fixo', 'fixed', 200.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'PROMO14-1', 'Promoção 1', 'Desconto especial', 'percentage', 15.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Bem Estar'), 'PROMO14-2', 'Promoção 2', 'Desconto fixo', 'fixed', 500.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'PROMO15-1', 'Promoção 1', 'Desconto especial', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Vip'), 'PROMO15-2', 'Promoção 2', 'Desconto fixo', 'fixed', 300.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1500, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'PROMO16-1', 'Promoção 1', 'Desconto especial', 'percentage', 12.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Tarde'), 'PROMO16-2', 'Promoção 2', 'Desconto fixo', 'fixed', 400.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'PROMO17-1', 'Promoção 1', 'Desconto especial', 'percentage', 8.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Mercado 24h'), 'PROMO17-2', 'Promoção 2', 'Desconto fixo', 'fixed', 200.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'PROMO18-1', 'Promoção 1', 'Desconto especial', 'percentage', 15.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue Qualidade'), 'PROMO18-2', 'Promoção 2', 'Desconto fixo', 'fixed', 500.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'PROMO19-1', 'Promoção 1', 'Desconto especial', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Fresco'), 'PROMO19-2', 'Promoção 2', 'Desconto fixo', 'fixed', 300.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1500, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'PROMO20-1', 'Promoção 1', 'Desconto especial', 'percentage', 12.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Vida'), 'PROMO20-2', 'Promoção 2', 'Desconto fixo', 'fixed', 400.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'PROMO21-1', 'Promoção 1', 'Desconto especial', 'percentage', 8.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Padaria Noite'), 'PROMO21-2', 'Promoção 2', 'Desconto fixo', 'fixed', 200.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'PROMO22-1', 'Promoção 1', 'Desconto especial', 'percentage', 15.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Supermercado Econômico'), 'PROMO22-2', 'Promoção 2', 'Desconto fixo', 'fixed', 500.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'PROMO23-1', 'Promoção 1', 'Desconto especial', 'percentage', 10.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Açougue do Campo'), 'PROMO23-2', 'Promoção 2', 'Desconto fixo', 'fixed', 300.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1500, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'PROMO24-1', 'Promoção 1', 'Desconto especial', 'percentage', 12.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Hortifruti Orgânico'), 'PROMO24-2', 'Promoção 2', 'Desconto fixo', 'fixed', 400.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 2000, 50, 0, 1, GETUTCDATE(), GETUTCDATE()),
+                
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'PROMO25-1', 'Promoção 1', 'Desconto especial', 'percentage', 8.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), NULL, 100, 0, 0, GETUTCDATE(), GETUTCDATE()),
+                (NEWID(), (SELECT id FROM account WHERE company_name = 'Farmácia Confiança'), 'PROMO25-2', 'Promoção 2', 'Desconto fixo', 'fixed', 200.00, CAST(GETDATE() AS DATE), DATEADD(day, 30, CAST(GETDATE() AS DATE)), 1000, 50, 0, 0, GETUTCDATE(), GETUTCDATE());
+        </sql>
+        
+        <!-- Insert PROMOTION_PRODUCTS (80 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 80 promotion_products (relating promotions with specific products)
+            INSERT INTO promotion_product (promotion_id, product_id)
+            SELECT TOP 80
+                p.id,
+                pr.id
+            FROM promotion p
+            CROSS APPLY (SELECT TOP 1 * FROM product WHERE account_id = p.account_id AND active = 1 ORDER BY NEWID()) pr
+            WHERE p.active = 1;
+        </sql>
+        
+        <!-- Insert PROMOTION_COMBOS (30 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 30 promotion_combos (relating with combo-type promotions)
+            INSERT INTO promotion_combo (id, promotion_id, combo_name, combo_price_cents, created_at, updated_at)
+            SELECT TOP 30
+                NEWID(),
+                p.id,
+                'Combo ' + p.name,
+                ABS(CHECKSUM(NEWID()) % 10000) + 5000,
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM promotion p
+            WHERE p.active = 1
+            AND NOT EXISTS (SELECT 1 FROM promotion_combo WHERE promotion_id = p.id);
+        </sql>
+        
+        <!-- Insert PROMOTION_COMBO_ITEMS (100 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 100 promotion_combo_items (relating combos with products)
+            INSERT INTO promotion_combo_item (combo_id, product_id, quantity)
+            SELECT TOP 100
+                pc.id,
+                pr.id,
+                1 + ABS(CHECKSUM(NEWID()) % 3)
+            FROM promotion_combo pc
+            CROSS APPLY (SELECT TOP 1 * FROM product WHERE account_id = (SELECT account_id FROM promotion WHERE id = pc.promotion_id) AND active = 1 ORDER BY NEWID()) pr;
+        </sql>
+        
+        <!-- Insert CARTS (60 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 60 carts (some with customer_id, some with session_id only)
+            -- Note: session_id must be unique, so we generate a unique value for each cart
+            INSERT INTO cart (id, customer_id, account_id, session_id, promotion_code, discount_amount_cents, total_amount_cents, created_at, updated_at)
+            SELECT TOP 60
+                cart_id,
+                customer_id,
+                account_id,
+                'session_' + CAST(cart_id AS VARCHAR(36)) as session_id,
+                promotion_code,
+                discount_amount_cents,
+                total_amount_cents,
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM (
+                SELECT 
+                    NEWID() as cart_id,
+                    CASE WHEN ABS(CHECKSUM(c.id) % 2) = 0 THEN c.id ELSE NULL END as customer_id,
+                    c.account_id,
+                    CASE WHEN ABS(CHECKSUM(c.id) % 3) = 0 THEN (SELECT TOP 1 code FROM promotion WHERE account_id = c.account_id AND active = 1) ELSE NULL END as promotion_code,
+                    CASE WHEN ABS(CHECKSUM(c.id) % 3) = 0 THEN ABS(CHECKSUM(c.id) % 1000) ELSE 0 END as discount_amount_cents,
+                    ABS(CHECKSUM(c.id) % 50000) + 1000 as total_amount_cents
+                FROM customer c
+                WHERE c.customer_type = 'CUSTOMER'
+            ) sub;
+        </sql>
+        
+        <!-- Insert CART_ITEMS (150 registros) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            -- Insert 150 cart_items (2-5 items per cart)
+            INSERT INTO cart_item (id, cart_id, product_id, quantity, unit_price_cents, subtotal_cents, created_at, updated_at)
+            SELECT TOP 150
+                NEWID(),
+                c.id,
+                p.id,
+                1 + ABS(CHECKSUM(c.id) % 5),
+                ABS(CHECKSUM(c.id) % 5000) + 500,
+                (1 + ABS(CHECKSUM(c.id) % 5)) * (ABS(CHECKSUM(c.id) % 5000) + 500),
+                GETUTCDATE(),
+                GETUTCDATE()
+            FROM cart c
+            CROSS APPLY (SELECT TOP 1 * FROM product WHERE account_id = c.account_id AND active = 1 ORDER BY NEWID()) p
+            WHERE c.account_id IN (SELECT id FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%')
+            AND p.id IS NOT NULL;
+        </sql>
+        
+        <rollback>
+            <sql>
+                SET QUOTED_IDENTIFIER ON;
+                -- Remove all test data in reverse order
+                DELETE FROM cart_item;
+                DELETE FROM cart;
+                DELETE FROM promotion_combo_item;
+                DELETE FROM promotion_combo;
+                DELETE FROM promotion_product;
+                DELETE FROM promotion;
+                DELETE FROM reminder;
+                DELETE FROM template WHERE account_id IN (SELECT id FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%');
+                DELETE FROM [order];
+                DELETE FROM subscription_exception;
+                DELETE FROM subscription;
+                DELETE FROM product WHERE account_id IN (SELECT id FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%');
+                DELETE FROM customer WHERE account_id IN (SELECT id FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%');
+                DELETE FROM [user] WHERE account_id IN (SELECT id FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%');
+                DELETE FROM account WHERE company_name LIKE '%Padaria%' OR company_name LIKE '%Mercado%' OR company_name LIKE '%Farmácia%' OR company_name LIKE '%Açougue%' OR company_name LIKE '%Hortifruti%';
+            </sql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="fix_ccs_customer_fk" author="propagno">
+        <comment>Fix customer_club_subscription foreign key to reference customer table instead of user table</comment>
+        
+        <sql>
+            -- Remove incorrect foreign key that references [user] table
+            IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'fk_ccs_customer')
+            BEGIN
+                ALTER TABLE customer_club_subscription
+                DROP CONSTRAINT fk_ccs_customer;
+            END
+        </sql>
+        
+        <sql>
+            -- Add correct foreign key that references customer table
+            IF NOT EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'fk_ccs_customer')
+            BEGIN
+                ALTER TABLE customer_club_subscription
+                ADD CONSTRAINT fk_ccs_customer FOREIGN KEY (customer_id) 
+                    REFERENCES customer(id) ON DELETE NO ACTION;
+            END
+        </sql>
+        
+        <rollback>
+            -- Rollback: restore incorrect foreign key (for safety, but this should not be used)
+            IF EXISTS (SELECT * FROM sys.foreign_keys WHERE name = 'fk_ccs_customer')
+            BEGIN
+                ALTER TABLE customer_club_subscription
+                DROP CONSTRAINT fk_ccs_customer;
+            END
+            
+            ALTER TABLE customer_club_subscription
+            ADD CONSTRAINT fk_ccs_customer FOREIGN KEY (customer_id) 
+                REFERENCES [user](id) ON DELETE NO ACTION;
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

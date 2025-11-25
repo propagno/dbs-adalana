@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250122-001" author="adalana">
+        <comment>Add delivery tracking and security fields to order table</comment>
+        
+        <!-- Atribuição de entregador -->
+        <addColumn tableName="order">
+            <column name="assigned_deliverer_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        
+        <addColumn tableName="order">
+            <column name="assigned_at" type="DATETIME2"/>
+        </addColumn>
+        
+        <!-- Timestamps de entrega -->
+        <addColumn tableName="order">
+            <column name="delivery_started_at" type="DATETIME2"/>
+        </addColumn>
+        
+        <addColumn tableName="order">
+            <column name="delivery_arrived_at" type="DATETIME2"/>
+        </addColumn>
+        
+        <!-- OTP Seguro (BCrypt hash) -->
+        <addColumn tableName="order">
+            <column name="delivery_confirmation_code_hash" type="VARCHAR(255)"/>
+        </addColumn>
+        
+        <addColumn tableName="order">
+            <column name="code_attempts" type="INT" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        
+        <!-- Geolocalização (opcional) -->
+        <addColumn tableName="order">
+            <column name="delivery_start_location" type="NVARCHAR(100)"/>
+        </addColumn>
+        
+        <addColumn tableName="order">
+            <column name="delivery_end_location" type="NVARCHAR(100)"/>
+        </addColumn>
+        
+        <!-- Foreign key para entregador atribuído -->
+        <addForeignKeyConstraint 
+            baseTableName="order" 
+            baseColumnNames="assigned_deliverer_id" 
+            constraintName="fk_order_assigned_deliverer"
+            referencedTableName="user" 
+            referencedColumnNames="id"
+            onDelete="NO ACTION"/>
+        
+        <!-- Índice para consultas por entregador -->
+        <createIndex tableName="order" indexName="idx_order_assigned_deliverer">
+            <column name="assigned_deliverer_id"/>
+        </createIndex>
+        
+        <rollback>
+            <dropIndex tableName="order" indexName="idx_order_assigned_deliverer"/>
+            <dropForeignKeyConstraint baseTableName="order" constraintName="fk_order_assigned_deliverer"/>
+            <dropColumn tableName="order" columnName="delivery_end_location"/>
+            <dropColumn tableName="order" columnName="delivery_start_location"/>
+            <dropColumn tableName="order" columnName="code_attempts"/>
+            <dropColumn tableName="order" columnName="delivery_confirmation_code_hash"/>
+            <dropColumn tableName="order" columnName="delivery_arrived_at"/>
+            <dropColumn tableName="order" columnName="delivery_started_at"/>
+            <dropColumn tableName="order" columnName="assigned_at"/>
+            <dropColumn tableName="order" columnName="assigned_deliverer_id"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

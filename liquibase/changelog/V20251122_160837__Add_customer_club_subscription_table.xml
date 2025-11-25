@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="52" author="propagno">
+        <comment>Add_customer_club_subscription_table</comment>
+        
+        <!-- SQL gerado a partir do modelo físico -->
+        <sql>
+            -- Create customer_club_subscriptions table
+-- This table stores customer subscriptions to club benefits
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[customer_club_subscription]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE customer_club_subscription (
+        id UNIQUEIDENTIFIER PRIMARY KEY DEFAULT NEWID(),
+        account_id UNIQUEIDENTIFIER NOT NULL,
+        customer_id UNIQUEIDENTIFIER NOT NULL,
+        subscription_club_id UNIQUEIDENTIFIER NOT NULL,
+        status VARCHAR(20) NOT NULL DEFAULT 'ACTIVE',
+        start_date DATETIME2 NOT NULL,
+        next_billing_date DATETIME2,
+        paused_at DATETIME2,
+        pause_reason VARCHAR(500),
+        resume_date DATETIME2,
+        cancelled_at DATETIME2,
+        cancellation_reason VARCHAR(500),
+        total_savings_cents BIGINT DEFAULT 0,
+        months_active INT DEFAULT 0,
+        auto_renew BIT DEFAULT 1,
+        created_at DATETIME2 NOT NULL DEFAULT GETUTCDATE(),
+        updated_at DATETIME2 DEFAULT GETUTCDATE(),
+        
+        CONSTRAINT fk_ccs_account FOREIGN KEY (account_id) 
+            REFERENCES account(id) ON DELETE NO ACTION,
+        CONSTRAINT fk_ccs_customer FOREIGN KEY (customer_id) 
+            REFERENCES [user](id) ON DELETE NO ACTION,
+        CONSTRAINT fk_ccs_club FOREIGN KEY (subscription_club_id) 
+            REFERENCES subscription_club(id) ON DELETE NO ACTION,
+        CONSTRAINT uk_ccs_customer_account UNIQUE (customer_id, account_id),
+        CONSTRAINT chk_ccs_status CHECK (status IN ('ACTIVE', 'PAUSED', 'CANCELLED'))
+    );
+END
+
+-- Create indexes for better query performance
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_ccs_account' AND object_id = OBJECT_ID('customer_club_subscription'))
+BEGIN
+    CREATE INDEX idx_ccs_account ON customer_club_subscription(account_id);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_ccs_customer' AND object_id = OBJECT_ID('customer_club_subscription'))
+BEGIN
+    CREATE INDEX idx_ccs_customer ON customer_club_subscription(customer_id);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_ccs_status' AND object_id = OBJECT_ID('customer_club_subscription'))
+BEGIN
+    CREATE INDEX idx_ccs_status ON customer_club_subscription(status);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_ccs_next_billing' AND object_id = OBJECT_ID('customer_club_subscription'))
+BEGIN
+    CREATE INDEX idx_ccs_next_billing ON customer_club_subscription(next_billing_date);
+END
+
+IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_ccs_account_status' AND object_id = OBJECT_ID('customer_club_subscription'))
+BEGIN
+    CREATE INDEX idx_ccs_account_status ON customer_club_subscription(account_id, status);
+END
+
+
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

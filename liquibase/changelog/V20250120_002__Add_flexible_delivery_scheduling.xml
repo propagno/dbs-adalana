@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250120-002-001" author="adalana">
+        <comment>Add max_scheduling_days to delivery_settings table</comment>
+        
+        <addColumn tableName="delivery_settings">
+            <column name="max_scheduling_days" type="INT" defaultValueNumeric="30">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <rollback>
+            <dropColumn tableName="delivery_settings" columnName="max_scheduling_days"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20250120-002-002" author="adalana">
+        <comment>Create operating_hours table for flexible business hours configuration (separate from delivery_schedule)</comment>
+        
+        <createTable tableName="operating_hours">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day_of_week" type="NVARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open_time" type="TIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="close_time" type="TIME">
+                <constraints nullable="true"/>
+            </column>
+            <column name="is_open" type="BIT" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="operating_hours" 
+            baseColumnNames="account_id" 
+            constraintName="fk_operating_hours_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addUniqueConstraint 
+            tableName="operating_hours"
+            constraintName="uk_operating_hours_account_day"
+            columnNames="account_id, day_of_week"/>
+
+        <createIndex tableName="operating_hours" indexName="idx_operating_hours_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="operating_hours"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="20250120-002-003" author="adalana">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="order" columnName="delivery_confirmation_code"/>
+        </preConditions>
+        <comment>Update delivery confirmation code field type and add delivery_code_generated_at to order table</comment>
+        
+        <!-- Alter existing column to support longer codes -->
+        <modifyDataType tableName="order" columnName="delivery_confirmation_code" newDataType="NVARCHAR(60)"/>
+        
+        <!-- Add timestamp for when code was generated -->
+        <addColumn tableName="order">
+            <column name="delivery_code_generated_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <rollback>
+            <modifyDataType tableName="order" columnName="delivery_confirmation_code" newDataType="VARCHAR(4)"/>
+            <dropColumn tableName="order" columnName="delivery_code_generated_at"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

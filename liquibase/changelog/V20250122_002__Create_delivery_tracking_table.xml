@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250122-002" author="adalana">
+        <comment>Create delivery_tracking table for GPS location history</comment>
+        
+        <createTable tableName="delivery_tracking">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="deliverer_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="latitude" type="DECIMAL(10,8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="longitude" type="DECIMAL(11,8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tracking_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addForeignKeyConstraint 
+            baseTableName="delivery_tracking" 
+            baseColumnNames="order_id" 
+            constraintName="fk_tracking_order"
+            referencedTableName="order" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+        
+        <addForeignKeyConstraint 
+            baseTableName="delivery_tracking" 
+            baseColumnNames="deliverer_id" 
+            constraintName="fk_tracking_deliverer"
+            referencedTableName="user" 
+            referencedColumnNames="id"/>
+        
+        <createIndex tableName="delivery_tracking" indexName="idx_tracking_order">
+            <column name="order_id"/>
+        </createIndex>
+        
+        <createIndex tableName="delivery_tracking" indexName="idx_tracking_deliverer">
+            <column name="deliverer_id"/>
+        </createIndex>
+        
+        <sql>
+            ALTER TABLE delivery_tracking ADD CONSTRAINT ck_tracking_type 
+            CHECK (tracking_type IN ('STARTED', 'IN_TRANSIT', 'ARRIVED', 'COMPLETED'));
+        </sql>
+        
+        <rollback>
+            <dropTable tableName="delivery_tracking"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

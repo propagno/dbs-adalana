@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250117-001" author="adalana">
+        <comment>Add subscription_club_id column to subscription table</comment>
+        
+        <addColumn tableName="subscription">
+            <column name="subscription_club_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+
+        <createIndex tableName="subscription" indexName="idx_subscription_club_id">
+            <column name="subscription_club_id"/>
+        </createIndex>
+
+        <rollback>
+            <dropIndex tableName="subscription" indexName="idx_subscription_club_id"/>
+            <dropColumn tableName="subscription" columnName="subscription_club_id"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

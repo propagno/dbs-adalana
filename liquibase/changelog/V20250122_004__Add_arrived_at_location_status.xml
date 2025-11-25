@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250122-004" author="adalana">
+        <comment>Add ARRIVED_AT_LOCATION status to order constraint</comment>
+        
+        <sql>
+            ALTER TABLE [order] DROP CONSTRAINT ck_order_status;
+            
+            ALTER TABLE [order] ADD CONSTRAINT ck_order_status 
+            CHECK (status IN ('pending', 'notified', 'confirmed', 'assigned_to_deliverer', 
+                              'in_transit', 'arrived_at_location', 'delivered', 'failed', 'rejected',
+                              'not_delivered_customer_absent', 'not_delivered_address_issue', 
+                              'not_delivered_refused', 'cancelled_by_customer', 'cancelled_by_company',
+                              'cancelled_request_pending'));
+        </sql>
+        
+        <rollback>
+            <sql>
+                ALTER TABLE [order] DROP CONSTRAINT ck_order_status;
+                
+                ALTER TABLE [order] ADD CONSTRAINT ck_order_status 
+                CHECK (status IN ('pending', 'notified', 'confirmed', 'assigned_to_deliverer', 
+                                  'in_transit', 'delivered', 'failed', 'rejected',
+                                  'not_delivered_customer_absent', 'not_delivered_address_issue', 
+                                  'not_delivered_refused', 'cancelled_by_customer', 'cancelled_by_company',
+                                  'cancelled_request_pending'));
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250118-001" author="adalana">
+        <comment>Update default appearance values for rebranding - applies new brand colors to accounts without custom appearance</comment>
+        
+        <sql>
+            -- Update accounts that don't have appearance settings or don't have primaryColor set
+            UPDATE account 
+            SET settings = CASE
+                -- If settings is NULL, create new JSON with appearance
+                WHEN settings IS NULL THEN 
+                    '{"appearance":{"primaryColor":"#1A1F71","secondaryColor":"#FF4E42","accentColor":"#FEC601","theme":"light"}}'
+                -- If settings exists but appearance is NULL, add appearance
+                WHEN JSON_VALUE(settings, '$.appearance') IS NULL THEN
+                    JSON_MODIFY(settings, '$.appearance', '{"primaryColor":"#1A1F71","secondaryColor":"#FF4E42","accentColor":"#FEC601","theme":"light"}')
+                -- If appearance exists but primaryColor is NULL, update appearance
+                WHEN JSON_VALUE(settings, '$.appearance.primaryColor') IS NULL THEN
+                    JSON_MODIFY(
+                        JSON_MODIFY(
+                            JSON_MODIFY(
+                                JSON_MODIFY(settings, '$.appearance.primaryColor', '#1A1F71'),
+                                '$.appearance.secondaryColor', '#FF4E42'
+                            ),
+                            '$.appearance.accentColor', '#FEC601'
+                        ),
+                        '$.appearance.theme', 'light'
+                    )
+                ELSE settings
+            END
+            WHERE settings IS NULL
+               OR JSON_VALUE(settings, '$.appearance') IS NULL
+               OR JSON_VALUE(settings, '$.appearance.primaryColor') IS NULL;
+        </sql>
+
+        <rollback>
+            <comment>Rollback: Remove appearance settings added by this migration</comment>
+            <sql>
+                -- Remove appearance settings that match default rebranding values
+                UPDATE account
+                SET settings = JSON_MODIFY(settings, '$.appearance', NULL)
+                WHERE JSON_VALUE(settings, '$.appearance.primaryColor') = '#1A1F71'
+                  AND JSON_VALUE(settings, '$.appearance.secondaryColor') = '#FF4E42'
+                  AND JSON_VALUE(settings, '$.appearance.accentColor') = '#FEC601';
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

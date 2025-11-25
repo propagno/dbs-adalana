@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250120-001" author="adalana">
+        <comment>Add advanced logistics tables and columns</comment>
+
+        <!-- Update delivery_settings table -->
+        <addColumn tableName="delivery_settings">
+            <column name="fee_strategy" type="VARCHAR(20)" defaultValue="PER_KM">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fixed_fee_value" type="DECIMAL(10,2)"/>
+            <column name="free_shipping_threshold" type="DECIMAL(10,2)"/>
+            <column name="allow_same_day" type="BIT" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="same_day_cutoff_time" type="TIME"/>
+            <column name="min_lead_time_minutes" type="INT" defaultValueNumeric="60"/>
+        </addColumn>
+
+        <sql>
+            ALTER TABLE delivery_settings ADD CONSTRAINT ck_delivery_settings_fee_strategy 
+            CHECK (fee_strategy IN ('FIXED', 'PER_KM', 'TIERED'));
+        </sql>
+
+        <!-- Create delivery_fee_tiers table -->
+        <createTable tableName="delivery_fee_tiers">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="delivery_settings_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="min_distance_km" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="max_distance_km" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fee_value" type="DECIMAL(10,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="delivery_fee_tiers" 
+            baseColumnNames="delivery_settings_id" 
+            constraintName="fk_delivery_fee_tiers_settings"
+            referencedTableName="delivery_settings" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="delivery_fee_tiers" indexName="idx_delivery_fee_tiers_settings_id">
+            <column name="delivery_settings_id"/>
+        </createIndex>
+
+        <!-- Create delivery_schedule table -->
+        <createTable tableName="delivery_schedule">
+            <column name="id" type="UNIQUEIDENTIFIER" defaultValueComputed="NEWID()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="day_of_week" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="close_time" type="TIME">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_active" type="BIT" defaultValueBoolean="true">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()"/>
+        </createTable>
+
+        <addForeignKeyConstraint 
+            baseTableName="delivery_schedule" 
+            baseColumnNames="account_id" 
+            constraintName="fk_delivery_schedule_account"
+            referencedTableName="account" 
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <createIndex tableName="delivery_schedule" indexName="idx_delivery_schedule_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <addUniqueConstraint 
+            tableName="delivery_schedule" 
+            columnNames="account_id, day_of_week, open_time" 
+            constraintName="uq_delivery_schedule_account_day_time"/>
+
+        <sql>
+            ALTER TABLE delivery_schedule ADD CONSTRAINT ck_delivery_schedule_day_of_week
+            CHECK (day_of_week BETWEEN 0 AND 6);
+        </sql>
+
+        <!-- Update order table -->
+        <addColumn tableName="order">
+            <column name="delivery_confirmation_code" type="VARCHAR(4)"/>
+            <column name="delivery_window_start" type="DATETIME2"/>
+            <column name="delivery_window_end" type="DATETIME2"/>
+        </addColumn>
+
+        <rollback>
+            <dropTable tableName="delivery_schedule"/>
+            <dropTable tableName="delivery_fee_tiers"/>
+            <dropColumn tableName="order" columnName="delivery_window_end"/>
+            <dropColumn tableName="order" columnName="delivery_window_start"/>
+            <dropColumn tableName="order" columnName="delivery_confirmation_code"/>
+            <dropColumn tableName="delivery_settings" columnName="min_lead_time_minutes"/>
+            <dropColumn tableName="delivery_settings" columnName="same_day_cutoff_time"/>
+            <dropColumn tableName="delivery_settings" columnName="allow_same_day"/>
+            <dropColumn tableName="delivery_settings" columnName="free_shipping_threshold"/>
+            <dropColumn tableName="delivery_settings" columnName="fixed_fee_value"/>
+            <dropColumn tableName="delivery_settings" columnName="fee_strategy"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

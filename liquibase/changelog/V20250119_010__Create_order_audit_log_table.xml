@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-010" author="adalana">
+        <comment>Create order_audit_log table for complete audit trail of order actions</comment>
+
+        <createTable tableName="order_audit_log">
+            <column name="id" type="UNIQUEIDENTIFIER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="performed_by" type="UNIQUEIDENTIFIER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="performed_by_type" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="old_status" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="new_status" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="old_acceptance_status" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="new_acceptance_status" type="VARCHAR(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="reason" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="metadata" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="ip_address" type="VARCHAR(45)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="user_agent" type="NVARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Foreign key constraint -->
+        <addForeignKeyConstraint
+            baseTableName="order_audit_log"
+            baseColumnNames="order_id"
+            constraintName="fk_order_audit_log_order"
+            referencedTableName="order"
+            referencedColumnNames="id"
+            onDelete="NO ACTION"
+            onUpdate="NO ACTION"/>
+
+        <!-- Indexes for performance -->
+        <createIndex tableName="order_audit_log" indexName="idx_order_audit_log_order_id">
+            <column name="order_id"/>
+        </createIndex>
+
+        <createIndex tableName="order_audit_log" indexName="idx_order_audit_log_action">
+            <column name="action"/>
+        </createIndex>
+
+        <createIndex tableName="order_audit_log" indexName="idx_order_audit_log_performed_by">
+            <column name="performed_by"/>
+        </createIndex>
+
+        <createIndex tableName="order_audit_log" indexName="idx_order_audit_log_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <createIndex tableName="order_audit_log" indexName="idx_order_audit_log_order_created">
+            <column name="order_id"/>
+            <column name="created_at"/>
+        </createIndex>
+
+    </changeSet>
+
+</databaseChangeLog>
+

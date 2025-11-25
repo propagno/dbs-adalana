@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-005" author="adalana">
+        <comment>Create unique index for cart customer_id and account_id to prevent duplicate carts for authenticated customers</comment>
+
+        <!-- Remove duplicate carts first (keep the most recent one) -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            -- Delete cart items for duplicate carts
+            WITH DuplicateCarts AS (
+                SELECT id, customer_id, account_id, created_at,
+                       ROW_NUMBER() OVER (PARTITION BY customer_id, account_id ORDER BY created_at DESC) as rn
+                FROM cart
+                WHERE customer_id IS NOT NULL
+            )
+            DELETE FROM cart_item
+            WHERE cart_id IN (
+                SELECT id FROM DuplicateCarts WHERE rn > 1
+            );
+            
+            -- Delete duplicate carts (keep the most recent one)
+            WITH DuplicateCarts AS (
+                SELECT id, customer_id, account_id, created_at,
+                       ROW_NUMBER() OVER (PARTITION BY customer_id, account_id ORDER BY created_at DESC) as rn
+                FROM cart
+                WHERE customer_id IS NOT NULL
+            )
+            DELETE FROM cart
+            WHERE id IN (
+                SELECT id FROM DuplicateCarts WHERE rn > 1
+            );
+        </sql>
+
+        <!-- Create unique index for customer_id + account_id when customer_id is NOT NULL -->
+        <sql>
+            SET QUOTED_IDENTIFIER ON;
+            
+            IF NOT EXISTS (
+                SELECT 1 FROM sys.indexes
+                WHERE object_id = OBJECT_ID('cart')
+                AND name = 'uq_cart_customer_account'
+            )
+            BEGIN
+                CREATE UNIQUE NONCLUSTERED INDEX uq_cart_customer_account
+                ON cart (customer_id, account_id)
+                WHERE customer_id IS NOT NULL;
+            END
+        </sql>
+
+        <rollback>
+            <dropIndex tableName="cart" indexName="uq_cart_customer_account"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

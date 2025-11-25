@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20241115-003" author="adalana">
+        <comment>Create promotion_product table for single product promotions</comment>
+        
+        <createTable tableName="promotion_product">
+            <column name="promotion_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey tableName="promotion_product" columnNames="promotion_id, product_id" constraintName="pk_promotion_product"/>
+
+        <addForeignKeyConstraint
+            baseTableName="promotion_product"
+            baseColumnNames="promotion_id"
+            constraintName="fk_promotion_product_promotion"
+            referencedTableName="promotion"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="promotion_product"
+            baseColumnNames="product_id"
+            constraintName="fk_promotion_product_product"
+            referencedTableName="product"
+            referencedColumnNames="id"
+            onDelete="NO ACTION"/>
+
+        <createIndex indexName="idx_promotion_product_promotion" tableName="promotion_product">
+            <column name="promotion_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_promotion_product_product" tableName="promotion_product">
+            <column name="product_id"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+

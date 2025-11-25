@@ -29,6 +29,48 @@
     <include file="V20241114_019__Add_product_image_url.xml" relativeToChangelogFile="true"/>
     <include file="V20241114_020__Add_account_image_url.xml" relativeToChangelogFile="true"/>
     <include file="V20241114_021__Add_product_allows_single_order.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_001__Add_account_category_phone_address.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_002__Create_promotion_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_003__Create_promotion_product_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_004__Create_promotion_combo_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_005__Create_promotion_combo_item_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_006__Create_cart_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_007__Create_cart_item_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_008__Fix_add_account_address_column.xml" relativeToChangelogFile="true"/>
+    <include file="V20241115_009__Insert_test_data.xml" relativeToChangelogFile="true"/>
+    <include file="V20241215_001__Create_customer_address_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250115_001__Create_platform_subscription_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250117_001__Add_subscription_club_id_to_subscription.xml" relativeToChangelogFile="true"/>
+    <include file="V20250117_002__Create_subscription_club_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250117_003__Create_delivery_settings_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250117_004__Create_cart_abandonment_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_001__Fix_order_unique_constraint.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_002__Fix_cart_session_id_unique_constraint.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_005__Create_cart_customer_account_unique_index.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_006__Add_order_number_to_order.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_007__Add_cpf_to_customer.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_008__Create_notification_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_009__Add_order_acceptance_fields.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_010__Create_order_audit_log_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250119_011__Update_order_status_constraint.xml" relativeToChangelogFile="true"/>
+    <include file="V20250120_001__Advanced_logistics_tables.xml" relativeToChangelogFile="true"/>
+    <include file="V20250120_002__Add_flexible_delivery_scheduling.xml" relativeToChangelogFile="true"/>
+    <include file="V20250122_001__Add_delivery_tracking_fields.xml" relativeToChangelogFile="true"/>
+    <include file="V20250122_002__Create_delivery_tracking_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20250122_003__Update_order_status_constraint.xml" relativeToChangelogFile="true"/>
+    <include file="V20250122_004__Add_arrived_at_location_status.xml" relativeToChangelogFile="true"/>
+    <include file="V20251122_160837__Add_customer_club_subscription_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20251124_001__Fix_customer_club_subscription_fk.xml" relativeToChangelogFile="true"/>
+    
+    <!-- Email verification and password reset -->
+    <include file="V20251123_001__Create_email_verification_tokens_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20251123_002__Create_password_reset_tokens_table.xml" relativeToChangelogFile="true"/>
+    <include file="V20251123_003__Add_email_verified_to_user.xml" relativeToChangelogFile="true"/>
+    
+    <!-- User addresses (not tied to account) -->
+    <include file="V20250124_001__Create_user_address_table.xml" relativeToChangelogFile="true"/>
+    
+    <!-- Company registration request workflow - TEMPORARILY DISABLED (SQL syntax errors) -->
+    <!-- <include file="V20251123_004__Create_company_registration_request_table.xml" relativeToChangelogFile="true"/> -->
 
 </databaseChangeLog>
-

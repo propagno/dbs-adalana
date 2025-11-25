@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250119-008" author="adalana">
+        <comment>Create notification table for user and account notifications</comment>
+
+        <createTable tableName="notification">
+            <column name="id" type="UNIQUEIDENTIFIER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="account_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="true"/>
+            </column>
+            <column name="title" type="NVARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="message" type="NVARCHAR(MAX)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read" type="BIT" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="read_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+            <column name="metadata" type="NVARCHAR(MAX)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2" defaultValueComputed="GETUTCDATE()">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Foreign keys -->
+        <addForeignKeyConstraint
+            baseTableName="notification"
+            baseColumnNames="user_id"
+            constraintName="fk_notification_user"
+            referencedTableName="user"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+            baseTableName="notification"
+            baseColumnNames="account_id"
+            constraintName="fk_notification_account"
+            referencedTableName="account"
+            referencedColumnNames="id"
+            onDelete="NO ACTION"/>
+
+        <!-- Indexes -->
+        <createIndex tableName="notification" indexName="idx_notification_user_id">
+            <column name="user_id"/>
+        </createIndex>
+
+        <createIndex tableName="notification" indexName="idx_notification_account_id">
+            <column name="account_id"/>
+        </createIndex>
+
+        <createIndex tableName="notification" indexName="idx_notification_read">
+            <column name="read"/>
+        </createIndex>
+
+        <createIndex tableName="notification" indexName="idx_notification_created_at">
+            <column name="created_at"/>
+        </createIndex>
+
+        <rollback>
+            <dropTable tableName="notification"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+
