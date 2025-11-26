@@ -61,6 +61,11 @@
     <include file="V20250122_004__Add_arrived_at_location_status.xml" relativeToChangelogFile="true"/>
     <include file="V20251122_160837__Add_customer_club_subscription_table.xml" relativeToChangelogFile="true"/>
     <include file="V20251124_001__Fix_customer_club_subscription_fk.xml" relativeToChangelogFile="true"/>
+    <include file="V20251124_002__Add_club_subscription_payment_tracking.xml" relativeToChangelogFile="true"/>
+    <include file="V20250125_001__Add_version_to_promotion.xml" relativeToChangelogFile="true"/>
+    
+    <!-- LGPD: Soft delete support -->
+    <include file="V20250126_001__Add_deleted_at_to_user_and_customer.xml" relativeToChangelogFile="true"/>
     
     <!-- Email verification and password reset -->
     <include file="V20251123_001__Create_email_verification_tokens_table.xml" relativeToChangelogFile="true"/>

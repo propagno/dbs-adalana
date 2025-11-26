@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <!-- Add last_payment_date to customer_club_subscription -->
+    <changeSet id="add_last_payment_date" author="system">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="customer_club_subscription" columnName="last_payment_date"/>
+            </not>
+        </preConditions>
+        <addColumn tableName="customer_club_subscription">
+            <column name="last_payment_date" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="customer_club_subscription" columnName="last_payment_date"/>
+        </rollback>
+    </changeSet>
+
+    <!-- Create club_subscription_payment table to track payment history -->
+    <changeSet id="create_club_subscription_payment_table" author="system">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="club_subscription_payment"/>
+            </not>
+        </preConditions>
+        <createTable tableName="club_subscription_payment">
+            <column name="id" type="UNIQUEIDENTIFIER">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_club_subscription_id" type="UNIQUEIDENTIFIER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="billing_date" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount_cents" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="paid_at" type="DATETIME2">
+                <constraints nullable="true"/>
+            </column>
+            <column name="payment_method" type="VARCHAR(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="payment_reference" type="VARCHAR(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="failure_reason" type="VARCHAR(500)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="DATETIME2">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        
+        <addForeignKeyConstraint
+            baseTableName="club_subscription_payment"
+            baseColumnNames="customer_club_subscription_id"
+            constraintName="fk_csp_subscription"
+            referencedTableName="customer_club_subscription"
+            referencedColumnNames="id"
+            onDelete="CASCADE"/>
+            
+        <createIndex indexName="idx_csp_subscription_id" tableName="club_subscription_payment">
+            <column name="customer_club_subscription_id"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_csp_billing_date" tableName="club_subscription_payment">
+            <column name="billing_date"/>
+        </createIndex>
+        
+        <createIndex indexName="idx_csp_status" tableName="club_subscription_payment">
+            <column name="status"/>
+        </createIndex>
+        
+        <rollback>
+            <dropTable tableName="club_subscription_payment"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+

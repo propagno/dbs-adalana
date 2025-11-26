@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250126-001" author="adalana">
+        <comment>Add deleted_at column to user and customer tables for LGPD soft delete</comment>
+        
+        <addColumn tableName="user">
+            <column name="deleted_at" type="DATETIME2"/>
+        </addColumn>
+        
+        <addColumn tableName="customer">
+            <column name="deleted_at" type="DATETIME2"/>
+        </addColumn>
+        
+        <createIndex tableName="user" indexName="idx_user_deleted_at">
+            <column name="deleted_at"/>
+        </createIndex>
+        
+        <createIndex tableName="customer" indexName="idx_customer_deleted_at">
+            <column name="deleted_at"/>
+        </createIndex>
+    </changeSet>
+</databaseChangeLog>
+

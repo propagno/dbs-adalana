@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <changeSet id="20250125-001" author="adalana">
+        <comment>Add version column to promotion table for optimistic locking</comment>
+        
+        <sql>
+            IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                          WHERE TABLE_NAME = 'promotion' AND COLUMN_NAME = 'version')
+            BEGIN
+                ALTER TABLE promotion ADD version BIGINT NULL;
+            END
+        </sql>
+        
+        <sql>
+            IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                      WHERE TABLE_NAME = 'promotion' AND COLUMN_NAME = 'version')
+            BEGIN
+                UPDATE promotion SET version = 0 WHERE version IS NULL;
+            END
+        </sql>
+        
+        <sql>
+            IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                      WHERE TABLE_NAME = 'promotion' AND COLUMN_NAME = 'version'
+                      AND IS_NULLABLE = 'YES')
+            BEGIN
+                ALTER TABLE promotion ALTER COLUMN version BIGINT NOT NULL;
+            END
+        </sql>
+        
+        <rollback>
+            <sql>
+                IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+                          WHERE TABLE_NAME = 'promotion' AND COLUMN_NAME = 'version')
+                BEGIN
+                    ALTER TABLE promotion DROP COLUMN version;
+                END
+            </sql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
+
