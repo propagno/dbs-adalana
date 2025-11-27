@@ -77,5 +77,8 @@
     
     <!-- Company registration request workflow - TEMPORARILY DISABLED (SQL syntax errors) -->
     <!-- <include file="V20251123_004__Create_company_registration_request_table.xml" relativeToChangelogFile="true"/> -->
+    
+    <!-- Webhook security: Idempotency tracking -->
+    <include file="V20250127_001__Create_webhook_event_table.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
